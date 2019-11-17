@@ -1,0 +1,26 @@
+version: "3"
+
+services:
+  npm:
+    container_name: vis_npm
+    hostname: vis_npm
+    build:
+      context: ./frontend
+    image: vis_frontend_image
+    command: [ "npm", "run", "start" ]
+    volumes:
+      - ./frontend:/vis/frontend
+      - /vis/frontend/node_modules
+    working_dir: /vis/frontend
+    ports:
+      - "3000:3000"
+    networks:
+      visnet:
+        ipv4_address: 175.0.0.3
+
+networks:
+  visnet:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 175.0.0.0/16
