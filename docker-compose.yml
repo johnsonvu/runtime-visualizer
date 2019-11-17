@@ -1,9 +1,9 @@
 version: "3"
 
 services:
-  npm:
-    container_name: vis_npm
-    hostname: vis_npm
+  frontend:
+    container_name: vis_frontend
+    hostname: vis_frontend
     build:
       context: ./frontend
     image: vis_frontend_image
@@ -17,6 +17,23 @@ services:
     networks:
       visnet:
         ipv4_address: 175.0.0.3
+
+  backend:
+    container_name: vis_backend
+    hostname: vis_backend
+    build:
+      context: ./backend
+    image: vis_backend_image
+    command: [ "npm", "start" ]
+    volumes:
+      - ./backend:/vis/backend
+      - /vis/backend/node_modules
+    working_dir: /vis/backend
+    ports:
+      - "3001:3001"
+    networks:
+      visnet:
+        ipv4_address: 175.0.0.4
 
 networks:
   visnet:
