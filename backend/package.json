@@ -5,6 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
+    "dev": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -13,5 +14,15 @@
     "express": "^4.17.1",
     "extract-zip": "^1.6.7",
     "file-system": "^2.2.2"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.4"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "Dockerfile",
+      ".gitignore"
+    ],
+    "delay": "2500"
   }
 }
