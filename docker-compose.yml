@@ -24,7 +24,7 @@ services:
     build:
       context: ./backend
     image: vis_backend_image
-    command: [ "npm", "start" ]
+    command: [ "npm", "run", "dev" ]
     volumes:
       - ./backend:/vis/backend
       - /vis/backend/node_modules
