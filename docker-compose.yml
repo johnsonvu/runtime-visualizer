@@ -6,7 +6,6 @@ services:
     hostname: vis_frontend
     build:
       context: ./frontend
-    image: vis_frontend_image
     command: [ "npm", "run", "start" ]
     volumes:
       - ./frontend:/vis/frontend
@@ -23,8 +22,7 @@ services:
     hostname: vis_backend
     build:
       context: ./backend
-    image: vis_backend_image
-    command: [ "npm", "run", "dev" ]
+    command: [ "npm", "run", "start" ]
     volumes:
       - ./backend:/vis/backend
       - /vis/backend/node_modules

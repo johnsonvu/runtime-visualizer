@@ -14,3 +14,5 @@ RUN npm install
 COPY *.js *.json ./
 
 EXPOSE 3001
+
+CMD [ "npm", "run", "start:prod"]
