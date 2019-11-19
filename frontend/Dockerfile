@@ -11,8 +11,8 @@ COPY package*.json ./
 
 RUN npm install
 
-COPY *.js *.json ./
-
 EXPOSE 3000
+
+COPY . .
 
 CMD [ "npm", "run", "start"]

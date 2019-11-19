@@ -11,8 +11,8 @@ COPY package*.json ./
 
 RUN npm install
 
-COPY *.js *.json ./
-
 EXPOSE 3001
+
+COPY . .
 
 CMD [ "npm", "run", "start:prod"]
