@@ -40,7 +40,12 @@ app.get('/example',function(req,res){
                 "id": "1",
                 "name": "node1",
                 "color": "red",
-                "val": 20
+                "val": 20,
+                "metadata": {
+                    "lines": 200,
+                    "variables": 4,
+                    "functionCalls": 10
+                }
             },
             {
                 "id": "2",
