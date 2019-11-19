@@ -14,7 +14,10 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "extract-zip": "^1.6.7",
-    "file-system": "^2.2.2"
+    "file-system": "^2.2.2",
+    "git-clone": "^0.1.0",
+    "shelljs": "^0.8.3",
+    "simple-git": "^1.126.0"
   },
   "devDependencies": {
     "nodemon": "^1.19.4"

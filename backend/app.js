@@ -1,15 +1,35 @@
 var fs = require("fs");
 var express = require("express");
 var cors = require("cors");
+const git = require('simple-git/promise');
+var shell = require('shelljs');
 
 const app = express();
 app.use(cors());
 
-var extract = require("extract-zip");
-
-
 app.get('/',function(req,res){
     res.send("Hello Johnson!");
+});
+
+// This is an example of downloading a git repository
+app.get('/download', function(req, res) {
+    // delete the repo directory if already cloned before
+    shell.rm('-rf', 'analyze/repo');
+
+    // define repo to clone
+    const repo = 'https://github.com/dnephin/Sudoku-Solver';
+    git()
+        .silent(true)
+        .clone(repo, 'analyze/repo')
+        .then(() => res.status(201).send("Successfully cloned the repository"))
+        .catch((err) => res.status(401).send("There was an error cloning " + err))
+
+    // once downloaded, you can trigger some sort of analysis (i.e. using shelljs)
+    // shell.cd(path);
+    // shell.exec(cmd);
+
+    // then post the results/data
+    // res.send(data);
 });
 
 // This is an example of how the data should be formatted
