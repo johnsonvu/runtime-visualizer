@@ -23,10 +23,12 @@ app.get('/download', function(req, res) {
     git()
         .silent(true)
         .clone(repo, 'analyze/repo')
-        .then(() => res.status(201).send("Successfully cloned the repository"))
+        .then(() => {
+            analyze.injectPythonCode();
+            res.status(201).send("Successfully cloned the repository");
+        })
         .catch((err) => res.status(401).send("There was an error cloning " + err))
 
-    analyze.injectPythonCode();
 
     // once downloaded, you can trigger some sort of analysis (i.e. using shelljs)
     // shell.cd(path);
