@@ -6,17 +6,16 @@ const injectPythonCode = () => {
 }
 
 function findPythonFiles(directory){
-    console.log("directory is: " + directory);
     let pythonFiles = [];
     fs.readdirSync(directory)
         .forEach((fileName) => {
             let fullFilePath = directory + "/" + fileName
-            console.log(fullFilePath);
             if(fullFilePath.endsWith(".py")){
                 pythonFiles.push(fullFilePath);
             }
             else if(fs.statSync(fullFilePath).isDirectory()){
-                findPythonFiles(fullFilePath);
+                let subPythonFiles = findPythonFiles(fullFilePath);
+                pythonFiles = pythonFiles.concat(subPythonFiles);
             }
         });
 
