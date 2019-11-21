@@ -24,8 +24,23 @@ function findPythonFiles(directory){
 }
 
 function injectRefelctions(filePath){
-    let contents = fs.readFileSync(filePath, "utf8");
-    console.log(contents);
+    let contents = fs.readFileSync(filePath, "utf8").split('\n');
+    let modifiedContent = injectCallCode(contents); 
+}
+
+function injectCallCode(fileContent){
+    var modifiedContent =[];
+    //var spacePttrn = '/^\\s*/';
+    for(var i = 0; i <fileContent.length; i++ ){
+        var line = fileContent[i];
+        modifiedContent.push(line);
+        if(line.trim().startsWith('def')){
+           //var numSpaces = line.match(spacePttrn)[0].lenth;
+            modifiedContent.push('print "{} --> {}".format(inspect.stack()[1][3], inspect.stack()[0][3])')
+        }
+    }
+    console.log(modifiedContent);
+    return fileContent
 }
   
   
