@@ -31,8 +31,9 @@ app.get('/download', function(req, res) {
 
 
     // once downloaded, you can trigger some sort of analysis (i.e. using shelljs)
-    // shell.cd(path);
-    // shell.exec(cmd);
+    // injectMemory()
+    // run unit test
+    // read stdoutput -> parse into obj
 
     // then post the results/data
     // res.send(data);
@@ -50,7 +51,7 @@ app.get('/example',function(req,res){
                 "metadata": {
                     "lines": 200,
                     "variables": 4,
-                    "functionCalls": 10
+                    "calls": 10
                 }
             },
             {
@@ -64,22 +65,44 @@ app.get('/example',function(req,res){
                 "name": "node3",
                 "color": "blue",
                 "val": 50
+            },
+            {
+                "id": "4",
+                "name": "node4",
+                "color": "blue",
+                "val": 10,
+                "metadata": {
+                    "lines": 200,
+                    "variables": 4,
+                    "calls": 10
+                }
             }
         ],
         "links": [
             {
+                "id": "1",
                 "source": "1",
                 "target": "2",
                 "width": 5,
                 "color": "#999",
-                "distance": 60
+                "distance": 60,
+                "name": "called 12 times"
             },
             {
+                "id": "2",
                 "source": "3",
                 "target": "2",
                 "width": 1,
                 "color": "#999",
                 "distance": 100
+            },
+            {
+                "id": "3",
+                "source": "2",
+                "target": "4",
+                "width": 5,
+                "color": "#999",
+                "distance": 50
             }
         ]
     };
