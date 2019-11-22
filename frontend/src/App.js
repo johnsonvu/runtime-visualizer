@@ -3,7 +3,8 @@ import './App.css';
 import {ForceGraph2D} from 'react-force-graph';
 import axios from 'axios';
 import Grid from '@material-ui/core/Grid';
-// import MetadataTable from './MetadataTable'
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
 import _ from 'lodash';
 
 class App extends React.Component {
@@ -19,15 +20,16 @@ class App extends React.Component {
       },
       currentNode: null,
       familyNodes: [],
-      familyLinks: []
+      familyLinks: [],
+      repoLink: 'https://github.com/dnephin/Sudoku-Solver'
     }
   }
 
-  requestData() {
-    axios.get(`http://localhost:3001/example`)
+  analyzeRepo() {
+    // console.log("analyze repo! " + this.state.repoLink)
+    axios.post(`http://localhost:3001/analyze`, {repoLink: this.state.repoLink})
       .then(res => {
         const data = res.data;
-        console.log(data);
         this.setState({data: data});
     });
   }
@@ -67,7 +69,6 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    this.requestData();
     // applies the distance to the links dynamically after mounting
     const graph = this.graphRef.current;
     graph.d3Force('link').distance(link => link.distance).iterations(30);
@@ -142,7 +143,7 @@ class App extends React.Component {
         const end = link.target;
         // ignore unbound links
         if (typeof start !== 'object' || typeof end !== 'object') return;
-        
+
         // calculate label positioning
         const textPos = Object.assign(...['x', 'y'].map(c => ({
           [c]: start[c] + (end[c] - start[c]) / 2 // calc middle point
@@ -179,7 +180,34 @@ class App extends React.Component {
 
     return (
       <Grid container spacing={1}>
-        <Grid container item xs={10} spacing={0}>
+        <Grid container item xa={12} spacing={0}>
+          <div className="Repo" style={{paddingLeft: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+            <form className="container" noValidate autoComplete="off">
+              <TextField
+                required
+                id="repo-link"
+                label="Repository Link"
+                defaultValue={this.state.repoLink}
+                onChange={(text) => this.setState({repoLink: text})}
+                className="textField"
+                margin="normal"
+                variant="filled"
+              />
+            </form>
+            <div style={{paddingLeft: '10px'}}>
+              <Button 
+                id="repo-button" 
+                variant="contained" 
+                color="primary" 
+                className="button"
+                onClick={() => this.analyzeRepo()}
+              >
+                Analyze Repo
+              </Button>
+            </div>
+          </div>
+        </Grid>
+        <Grid container item xs={12} spacing={0}>
           <div className="App">
             <ForceGraph2D 
               ref={this.graphRef}
@@ -198,9 +226,6 @@ class App extends React.Component {
             />
           </div>
         </Grid>
-        {/* <Grid container item xs={2} spacing={0}>
-          { (this.state.currentNode) && <div id="metadata"><MetadataTable node={this.state.currentNode}/></div>}
-        </Grid> */}
       </Grid>
     );
   }
