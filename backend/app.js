@@ -1,14 +1,16 @@
-var fs = require("fs");
-var express = require("express");
-var cors = require("cors");
+const fs = require("fs");
+const express = require("express");
+const cors = require("cors");
 const git = require('simple-git/promise');
-var shell = require('shelljs');
+const shell = require('shelljs');
+const analyze = require("./analyze.js")
+
 
 const app = express();
 app.use(cors());
 
 app.get('/',function(req,res){
-    res.send("Hello Johnson!");
+    res.send("It's working!");
 });
 
 // This is an example of downloading a git repository
@@ -21,8 +23,12 @@ app.get('/download', function(req, res) {
     git()
         .silent(true)
         .clone(repo, 'analyze/repo')
-        .then(() => res.status(201).send("Successfully cloned the repository"))
+        .then(() => {
+            analyze.injectPythonCode();
+            res.status(201).send("Successfully cloned the repository");
+        })
         .catch((err) => res.status(401).send("There was an error cloning " + err))
+
 
     // once downloaded, you can trigger some sort of analysis (i.e. using shelljs)
     // injectMemory()
