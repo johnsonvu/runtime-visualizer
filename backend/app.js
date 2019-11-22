@@ -25,8 +25,9 @@ app.get('/download', function(req, res) {
         .catch((err) => res.status(401).send("There was an error cloning " + err))
 
     // once downloaded, you can trigger some sort of analysis (i.e. using shelljs)
-    // shell.cd(path);
-    // shell.exec(cmd);
+    // injectMemory()
+    // run unit test
+    // read stdoutput -> parse into obj
 
     // then post the results/data
     // res.send(data);
