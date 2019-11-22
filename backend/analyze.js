@@ -26,7 +26,7 @@ function findPythonFiles(directory){
 function injectRefelctions(filePath){
     let contents = fs.readFileSync(filePath, 'utf8').split('\n').map((line)=>line.replace(/    /g, '\t'));
     let modifiedContent = injectReflectionCode(contents);
-    //fs.writeFileSync(filePath, modifiedContent);
+    fs.writeFileSync(filePath, modifiedContent);
 }
 
 function numOfTabs(line){
@@ -42,13 +42,15 @@ function numOfTabs(line){
 function injectReflectionCode(fileContent){
     let modifiedContent = [];
     modifiedContent.push('from memory_profiler import profile\r');
-    //modifiedContent.push('from CodeAnalyzer import codeAnalyzer\r');
+    modifiedContent.push('import inspect\r');
+    modifiedContent.push('from codeAnalyzer import codeAnalyzer\r');
     for(let i = 0; i <fileContent.length; i++ ){
         let line = fileContent[i];
         modifiedContent.push(line);
         if(line.trim().startsWith('def')){
             let numTabs = numOfTabs(line);
-            modifiedContent.push('\t'.repeat(numTabs + 1) + 'print "{} --> {}".format(inspect.stack()[1][3], inspect.stack()[0][3])\r');
+            modifiedContent.push('\t'.repeat(numTabs + 1) + 'functionName = inspect.stack()[0][3]\r');
+            // modifiedContent.push('\t'.repeat(numTabs + 1) + 'print "{} --> {}".format(inspect.stack()[1][3], functionName)\r');
         }
     }
     //console.log(modifiedContent);

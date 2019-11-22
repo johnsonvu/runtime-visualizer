@@ -1,6 +1,7 @@
 import unittest
 from libraryBook import Library, Book
 from timeit import default_timer as timer
+from codeAnalyzer import codeAnalyzer
 
 
 class TestLibrary(unittest.TestCase):
@@ -42,7 +43,9 @@ class TestBook(unittest.TestCase):
 		start = timer()
 		self.assertEqual(self.EOSC112.findTopThreeAverageRating(), 84)
 		end = timer()
-		print "Time Elapsed: {}".format(end - start) # Time in seconds, e.g. 5.38091952400282
+		print "Time Elapsed: {}".format(end - start)
+		self.assertEqual(self.EOSC112.getLowestRating(), 13)
 		
 if __name__ == '__main__':
-    unittest.main()
+	unittest.main(exit=False)
+	print(codeAnalyzer.getCallOccurrence())
