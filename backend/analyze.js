@@ -3,7 +3,8 @@ const fs = require("fs");
 const injectPythonCode = () => {
     let pythonFiles = findPythonFiles(__dirname + "/analyze");
     console.log(JSON.stringify(pythonFiles));
-    pythonFiles.forEach(injectRefelctions);
+    //pythonFiles.forEach(injectRefelctions);
+    injectPythonCode('C:\\Users\\Leonl\\OneDrive\\Documents\\cpsc 410\\runtime-visualizer\\backend\\example\\LibraryBook.libraryBook.py');
 }
 
 function findPythonFiles(directory){
@@ -26,7 +27,8 @@ function findPythonFiles(directory){
 function injectRefelctions(filePath){
     let contents = fs.readFileSync(filePath, 'utf8').split('\n').map((line)=>line.replace(/    /g, '\t'));
     let modifiedContent = injectReflectionCode(contents);
-    fs.writeFileSync(filePath, modifiedContent);
+    console.log(modifiedContent);
+    //fs.writeFileSync(filePath, modifiedContent);
 }
 
 function numOfTabs(line){
@@ -49,7 +51,8 @@ function injectReflectionCode(fileContent){
         modifiedContent.push(line);
         if(line.trim().startsWith('def')){
             let numTabs = numOfTabs(line);
-            modifiedContent.push('\t'.repeat(numTabs + 1) + 'functionName = inspect.stack()[0][3]\r');
+            var functionName = line.split('def')[1].split('(')[0].trim();
+            modifiedContent.push('\t'.repeat(numTabs + 1) + 'functionName = '+ functionName +'\r');
             // modifiedContent.push('\t'.repeat(numTabs + 1) + 'print "{} --> {}".format(inspect.stack()[1][3], functionName)\r');
         }
     }
