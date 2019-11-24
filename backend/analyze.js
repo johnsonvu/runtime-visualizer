@@ -1,18 +1,19 @@
-const fs = require("fs");
+const fs = require('fs');
+const inputAnalyzer = require('./analyze/inputAnalysis.js');
+const runtimeAnalyzer = require('./analyze/runtimeAnalysis.js');
 
 const injectPythonCode = () => {
-    let pythonFiles = findPythonFiles(__dirname + "/analyze");
-    console.log(JSON.stringify(pythonFiles));
-    //pythonFiles.forEach(injectRefelctions);
-    injectPythonCode('C:\\Users\\Leonl\\OneDrive\\Documents\\cpsc 410\\runtime-visualizer\\backend\\example\\LibraryBook.libraryBook.py');
+    let pythonFiles = findPythonFiles(__dirname + '/analyze');
+    let inputInfo = inputAnalyzer.getInputInfo(pythonFiles);
+    runtimeAnalyzer.analyzeRuntime(pythonFiles, inputInfo);
 }
 
 function findPythonFiles(directory){
     let pythonFiles = [];
     fs.readdirSync(directory)
         .forEach((fileName) => {
-            let fullFilePath = directory + "/" + fileName
-            if(fullFilePath.endsWith(".py")){
+            let fullFilePath = directory + '/' + fileName
+            if(fullFilePath.endsWith('.py')){
                 pythonFiles.push(fullFilePath);
             }
             else if(fs.statSync(fullFilePath).isDirectory()){
@@ -64,5 +65,4 @@ function injectReflectionCode(fileContent){
     return stringContent
 }
 
-  
 module.exports = { injectPythonCode: injectPythonCode };
