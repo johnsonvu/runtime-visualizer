@@ -61,6 +61,10 @@ class Book:
 				lowest = rating
 		return lowest
 
+		
+	def sumThree(self, first, second, third):
+		return first+second+third
+
 	def findTopThreeAverageRating(self):
 		largest, largest2, largest3, index1,index2, index3 = None,None,None,None,None,None
 		mylist = self.ratings
@@ -76,7 +80,7 @@ class Book:
 					if largest3 <= mylist[k] and k != index1 and k != index2 and k != index3:
 						largest3 = mylist[k]
 						index3 = k
-		return (largest + largest2 + largest3)/3
+		return self.sumThree(largest,largest2,largest3)/3
 
 	def findBottomThreeAverageRating(self):
 		smallest = 100
@@ -95,8 +99,7 @@ class Book:
 				continue
 			if val < smallest3:
 				smallest3 = val
-
-		return (smallest+smallest2+smallest3)/3
+		return self.sumThree(smallest,smallest2,smallest3)/3
 	
 	def changeRatingstoTopThreeAverage(self):
 		average = self.findTopThreeAverageRating()

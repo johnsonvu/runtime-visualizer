@@ -26,7 +26,7 @@ class CodeAnalyzer:
 			except:
 				continue
 		json_data = json.dumps(callAnalysis, indent=4)
-		#print json_data
+		print json_data
 		with open('data.txt', 'w') as outfile:
 			json.dump(json_data, outfile)
 
@@ -48,7 +48,5 @@ codeAnalyzer = CodeAnalyzer()
 	#codeAnalyzer.updateCallOccurrence("{}@For-1".format(functionName))
 
 	#Need to inject 	
-	#codeAnalyzer.createJsonFile() in the end of tests
-
 	#Caller					#Callee
 	#inspect.stack()[1][3], inspect.stack()[0][3]
