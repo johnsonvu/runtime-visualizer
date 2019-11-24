@@ -1,0 +1,24 @@
+Filename: reporting_file.py
+
+Line #    Mem usage    Increment   Line Contents
+================================================
+     5     11.8 MiB     11.8 MiB   @profile(stream=f)
+     6                             def my_func():
+     7     19.3 MiB      7.5 MiB       a = [1] * (10 ** 6)
+     8    171.9 MiB    152.6 MiB       b = [2] * (2 * 10 ** 7)
+     9     19.6 MiB      0.0 MiB       del b
+    10     19.6 MiB      0.0 MiB       return a
+
+
+Filename: reporting_file.py
+
+Line #    Mem usage    Increment   Line Contents
+================================================
+    12     11.9 MiB     11.9 MiB   @profile(stream=f)
+    13                             def my_func1():
+    14     19.4 MiB      7.5 MiB       a = [2] * (10 ** 6)
+    15    172.0 MiB    152.6 MiB       b = [3] * (2 * 10 ** 7)
+    16     19.6 MiB      0.0 MiB       del b
+    17     19.6 MiB      0.0 MiB       return a
+
+
