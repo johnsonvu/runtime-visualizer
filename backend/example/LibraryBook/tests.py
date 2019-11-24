@@ -49,3 +49,4 @@ class TestBook(unittest.TestCase):
 if __name__ == '__main__':
 	unittest.main(exit=False)
 	print(codeAnalyzer.getCallOccurrence())
+	codeAnalyzer.createJsonFile()
