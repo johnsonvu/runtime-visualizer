@@ -7,7 +7,7 @@ var fileNameArray = new Array();
 // module_name is the filename the function resides, with the ".py" removed
 var functionMemoryMap = new Map();
 
-// key: module_name.function_name ; value: 
+// key: module_name.function_name ; value:
 
 // to start fileParser, can delete once memory_profiler output connected
 var logfilePath = __dirname + "/repo/logfile.txt";
@@ -15,7 +15,7 @@ var logfilePath = __dirname + "/repo/logfile.txt";
 function analyzeMemoryUsage(pythonFiles, testCommand){
     pythonFiles.forEach((file) => injectAnalysisTool(file));
     //execute tests
-    const command = "cd analyze/repo && " + testCommand + " &> /dev/null";
+    const command = "cd analyze/repo && " + "C:/Python27/python.exe test.py" + " &> /dev/null";
     shell.exec(command);
     //get results
     parseLogFile(logfilePath);
@@ -69,12 +69,12 @@ function parseLogFile(path) {
     // Split on longer regex to avoid potential errors caused by splitting on strings within LineContents column of the table
     let regexFileNameHeader = RegExp("Filename: .*\n\nLine #    Mem usage    Increment   Line Contents\n================================================", "g");
 
-    let filenames = fs.readFileSync(path, 'utf8').match(regexFileNameHeader).filter(function (e) { 
+    let filenames = fs.readFileSync(path, 'utf8').match(regexFileNameHeader).filter(function (e) {
         return e;
     });
     parseAllTableFilenames(filenames);
 
-    let functions = fs.readFileSync(path, 'utf8').split(regexFileNameHeader).filter(function (e) { 
+    let functions = fs.readFileSync(path, 'utf8').split(regexFileNameHeader).filter(function (e) {
         return e;
     });
     parseAllTables(functions);
@@ -96,7 +96,7 @@ function parseAllTables(functions){
     let regexNewLineAndLineNum = RegExp("\n *[0-9]*(?: |\t)*", "g");
     for(let i = 0; i < functions.length; i++){
         let fn = functions[i];
-        let functionLines = fn.split(regexNewLineAndLineNum).filter(function (e) { 
+        let functionLines = fn.split(regexNewLineAndLineNum).filter(function (e) {
             return e;
         });
         parseFunction(functionLines,fileNameArray[i]);

@@ -253,12 +253,7 @@ app.post('/analyze', function(req, res) {
             // run-time & memory analysis
             // analysisResult[0]: runtime, analysisResult[1]: memory
             let analysisResult = analyze(testCmd);
-            // run time
             let johnsonGraph = analyze();
-
-            // memory
-
-            // join the data into a JSON
 
             // then post the results/data
             return res.send(JSON.stringify(johnsonGraph));

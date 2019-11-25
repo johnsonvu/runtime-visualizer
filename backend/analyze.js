@@ -11,13 +11,13 @@ const doAnalysis = (testCommand) => {
     let johnsonGraph = callGraphGenerator.toJohnsonGraph(callGraph);
     // let runtimeResult =  runtimeAnalyzer.analyzeRuntime(pythonFiles, testCommand);
     console.log("Runtime analysis completed.")
-    // let memoryResult = memoryAnalyzer.analyzeMemoryUsage(pythonFiles, testCommand); 
+    // let memoryResult = memoryAnalyzer.analyzeMemoryUsage(pythonFiles, testCommand);
     console.log("Memory analysis completed.")
     // console.log(memoryResult);
     console.log("Analysis completed.");
 
     // return [null, memoryResult];
-    
+
     // runtimeAnalyzer.analyzeRuntime(pythonFiles, subFolderDict);
 
     // console.log(JSON.stringify(johnsonGraph));

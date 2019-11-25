@@ -60,10 +60,6 @@ function injectReflectionCode(fileContent){
     let stringContent = '';
     for(let i = 0; i <modifiedContent.length; i++ ){
         console.log(modifiedContent[i]);
-        // if(modifiedContent[i].indexOf('unittest.main()') !== -1) {
-        //     console.log("here");
-        //     stringContent = stringContent.concat('\tprint("LMAO")\n'); 
-        // }
         stringContent = stringContent.concat(modifiedContent[i]+'\n');
     }
     return stringContent;
