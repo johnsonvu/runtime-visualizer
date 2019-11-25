@@ -4,7 +4,7 @@ const runtimeAnalyzer = require('./analyze/runtimeAnalysis.js');
 
 const injectPythonCode = () => {
     let pythonFiles = findPythonFiles(__dirname + '/analyze');
-    // let inputInfo = inputAnalyzer.getInputInfo(pythonFiles);
+    let inputInfo = inputAnalyzer.getInputInfo(pythonFiles);
     // runtimeAnalyzer.analyzeRuntime(pythonFiles, inputInfo);
 }
 
