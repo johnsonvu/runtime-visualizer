@@ -7,10 +7,12 @@ function analyzeRuntime(pythonFiles, subFolderDictionary){
     subFolderDict = subFolderDictionary;
     console.log(JSON.stringify(subFolderDict));
     pythonFiles.forEach(injectAnalysisTool);
-    // injectAnalysisTool('C:\\Users\\Leonl\\OneDrive\\Documents\\cpsc 410\\runtime-visualizer\\backend\\example\\LibraryBook\\libraryBook.py');
+    //injectAnalysisTool('C:\\Users\\Leonl\\OneDrive\\Documents\\cpsc 410\\runtime-visualizer\\backend\\example\\LibraryBook\\libraryBook.py');
 
     let testFiles = findTestFiles(pythonFiles);
-    testFiles.forEach(runUnitTests);
+    //injectCodeAnalyzer("C:\\Users\\Leonl\\OneDrive\\Documents\\cpsc 410\\runtime-visualizer\\backend\\example\\LibraryBook\\tests.py")
+    testFiles.forEach(injectCodeAnalyzer);
+    //testFiles.forEach(runUnitTests);
     //execute tests
     //get results
     //return results
@@ -31,9 +33,8 @@ function injectReflectionCode(fileContent, fileDepth){
     let forCount = 1;
     
     modifiedContent.push('import sys\r');
-    modifiedContent.push('sys.path.append("' + numDoubleDots(fileDepth) + 'Y")\r');
+    modifiedContent.push('sys.path.append("' + numDoubleDots(fileDepth) + 'codeAnalyzer")\r');
     modifiedContent.push('from codeAnalyzer import codeAnalyzer\r');
-
     modifiedContent.push('from memory_profiler import profile\r');
     modifiedContent.push('import inspect\r');
     
@@ -62,6 +63,7 @@ function injectReflectionCode(fileContent, fileDepth){
             modifiedContent.push('\t'.repeat(numTabs + 1) + 'codeAnalyzer.updateCallOccurrence(functionName + "@For'+ forCount +'")');
         }
     }
+
     let stringContent = '';
     for(let i = 0; i <modifiedContent.length; i++ ){
         // console.log(modifiedContent[i]);
@@ -98,6 +100,68 @@ function findTestFiles(filePaths){
         let content = fs.readFileSync(filePath, 'utf8');
         return hasUnitTestsRegExp.test(content);
     });
+}
+
+function injectCodeAnalyzer(filePath){
+    let contents = fs.readFileSync(filePath, 'utf8').split('\n').map((line)=>line.replace(/    /g, '\t'));
+    let modifiedContent = writeCodeAnalyzer(contents, subFolderDict[filePath]);
+    fs.writeFileSync(filePath, modifiedContent);
+}
+
+function writeCodeAnalyzer(contents, fileDepth){
+    let modifiedContent = [];
+    modifiedContent.push('import sys\r');
+    modifiedContent.push('sys.path.append("' + numDoubleDots(fileDepth) + 'codeAnalyzer")\r');
+    modifiedContent.push('from codeAnalyzer import codeAnalyzer\r');
+    let defTab = 0;
+    for(let i = 0; i <contents.length; i++ ){
+        let line = contents[i];
+        modifiedContent.push(line);
+        
+        let forRegex = /\t*def\s+test/;
+        if(forRegex.test(line)){
+            functionName = line.split('def')[1].split('(')[0].trim();
+            defTab = countTabs(line);
+            let numTab = defTab+1;
+            i++;            
+            while(i < contents.length){
+                let functionContent = contents[i]
+                modifiedContent.push(functionContent);
+                numTab = countTabs(functionContent);
+                if(numTab <= defTab || functionContent.trim() === ''){
+                    break;
+                }
+                i++;
+            }
+            modifiedContent.push('\t'.repeat(defTab + 1) + 'codeAnalyzer.appendTestData(\"'+ functionName +'\")\r');
+        }
+        let mainRegex = /\t*if\s*__name__\s*==\s*['"]__main__["']:\s*/;
+        if(mainRegex.test(line)){
+            maintab = countTabs(line);
+            let unitTestMain = /unittest.main\(/g;
+            let exitFalse = /exit\s*=\s*False/;
+            i++;
+            while(i< contents.length){
+                line = contents[i];
+                if(unitTestMain.test(line)){
+                    if(exitFalse.test(line)){
+                        modifiedContent.push(line);
+                    }else{
+                        modifiedContent.push('\t'.repeat(maintab + 1) + 'unittest.main(exit=False)\r');
+                    }
+                    modifiedContent.push('\t'.repeat(maintab + 1) + 'codeAnalyzer.createJsonFile()\r');
+                    break;
+                }
+                i++
+            }
+        }
+    }
+    let stringContent = '';
+    for(let i = 0; i <modifiedContent.length; i++ ){
+        console.log(modifiedContent[i]);
+        stringContent = stringContent.concat(modifiedContent[i]+'\n');
+    }
+    return stringContent;
 }
 
 function runUnitTests(filePath){
