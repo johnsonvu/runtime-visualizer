@@ -13,7 +13,8 @@ var functionMemoryMap = new Map();
 var logfilePath = __dirname + "/repo/logfile.txt";
 
 function analyzeMemoryUsage(pythonFiles, testCommand){
-    pythonFiles.forEach((file) => injectAnalysisTool(file));
+    let nonTestFiles = findNonTestFiles(pythonFiles);
+    nonTestFiles.forEach((file) => injectAnalysisTool(file));
     //execute tests
     const command = "cd analyze/repo && " + testCommand;
     shell.exec(command);
@@ -142,6 +143,12 @@ function insertFunctionIntoMaps(fnName,fnMemPeak,fnMemEnd) {
     //     functionMemoryMap.set(fnName,setVals);
     // }
     functionMemoryMap.set(fnName,fnMemPeak);
+}
+
+function findNonTestFiles(filePaths){
+    return filePaths.filter((filePath) => {
+        return !filePath.toLowerCase().includes("test");
+    });
 }
 
 module.exports = { analyzeMemoryUsage: analyzeMemoryUsage };

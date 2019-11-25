@@ -7,10 +7,13 @@ let subFolderDict;
 function analyzeRuntime(pythonFiles, subFolderDictionary, testCommand){
     subFolderDict = subFolderDictionary;
     console.log(JSON.stringify(subFolderDict));
-    pythonFiles.forEach(injectAnalysisTool);
+    let pythonFilesWithExclusions = findPythonFilesWithExclusions(pythonFiles);
+    console.log(pythonFilesWithExclusions);
+    pythonFilesWithExclusions.forEach(injectAnalysisTool);
     //injectAnalysisTool('C:\\Users\\Leonl\\OneDrive\\Documents\\cpsc 410\\runtime-visualizer\\backend\\example\\LibraryBook\\libraryBook.py');
 
     let testFiles = findTestFiles(pythonFiles);
+    console.log(testFiles);
     //injectCodeAnalyzer("C:\\Users\\Leonl\\OneDrive\\Documents\\cpsc 410\\runtime-visualizer\\backend\\example\\LibraryBook\\tests.py")
     testFiles.forEach(injectCodeAnalyzer);
     //testFiles.forEach(runUnitTests);
@@ -53,7 +56,7 @@ function injectReflectionCode(fileContent, fileDepth){
         }
 
         // For Loop inside a function
-        let forRegex = new RegExp('[\t|| +]for +');
+        let forRegex = new RegExp('\t*for\s+');
         if(forRegex.test(line) && functionName != null){
             numTabs = countTabs(line);
             if(prevfunctionName == functionName){
@@ -97,12 +100,17 @@ function countTabs(line){
 }
 
 function findTestFiles(filePaths){
-    let hasUnitTestsRegExp = /import[^\n]+unittest/;
     return filePaths.filter((filePath) => {
-        let content = fs.readFileSync(filePath, 'utf8');
-        return hasUnitTestsRegExp.test(content);
+        return filePath.toLowerCase().includes("test");
     });
 }
+
+function findPythonFilesWithExclusions(filePaths){
+    return filePaths.filter((filePath) => {
+        return !filePath.toLowerCase().includes("test") && filePath.includes("codeAnalyzer.py");
+    });
+}
+
 
 function injectCodeAnalyzer(filePath){
     let contents = fs.readFileSync(filePath, 'utf8').split('\n').map((line)=>line.replace(/    /g, '\t'));
@@ -160,7 +168,7 @@ function writeCodeAnalyzer(contents, fileDepth){
     }
     let stringContent = '';
     for(let i = 0; i <modifiedContent.length; i++ ){
-        console.log(modifiedContent[i]);
+        //console.log(modifiedContent[i]);
         stringContent = stringContent.concat(modifiedContent[i]+'\n');
     }
     return stringContent;
