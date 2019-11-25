@@ -4,12 +4,13 @@ const runtimeAnalyzer = require('./analyze/runtimeAnalysis.js');
 const memoryAnalyzer = require('./analyze/memoryAnalysis');
 
 // invokes runtime and memory analysis and outputs their results
-const injectAndAnalyzeCode = (testCommand) => {
+const doAnalysis = (testCommand) => {
     let pythonFiles = findPythonFiles(__dirname + '/analyze/repo');
     // let inputInfo = inputAnalyzer.getInputInfo(pythonFiles);
-    // let runtimeResult = runtimeAnalyzer.analyzeRuntime(pythonFiles, inputInfo, testCommand);
-    let memoryResult = memoryAnalyzer.analyzeMemoryUsage(pythonFiles, null, testCommand);
+    // let runtimeResult =  runtimeAnalyzer.analyzeRuntime(pythonFiles, testCommand);
+    let memoryResult = memoryAnalyzer.analyzeMemoryUsage(pythonFiles, testCommand);
     // console.log(memoryResult);
+    console.log("Analysis completed.");
     return [null, memoryResult];
 }
 
@@ -31,4 +32,4 @@ function findPythonFiles(directory){
     return pythonFiles;
 }
 
-module.exports = { injectAndAnalyzeCode: injectAndAnalyzeCode };
+module.exports = doAnalysis;

@@ -12,10 +12,11 @@ var functionMemoryMap = new Map();
 // to start fileParser, can delete once memory_profiler output connected
 var logfilePath = __dirname + "/repo/logfile.txt";
 
-function analyzeMemoryUsage(pythonFiles, inputInfo, testCommand){
+function analyzeMemoryUsage(pythonFiles, testCommand){
     pythonFiles.forEach((file) => injectAnalysisTool(file));
     //execute tests
-    shell.exec("cd analyze/repo && " + testCommand);
+    const command = "cd analyze/repo && " + testCommand;
+    shell.exec(command);
     //get results
     parseLogFile(logfilePath);
     //return results

@@ -252,7 +252,7 @@ app.post('/analyze', function(req, res) {
 
             // run-time & memory analysis
             // analysisResult[0]: runtime, analysisResult[1]: memory
-            let analysisResult = analyze.injectAndAnalyzeCode(testCmd); 
+            let analysisResult = analyze(testCmd);
 
             // join the data into a JSON
 
