@@ -233,8 +233,12 @@ app.get('/',function(req,res){
 app.post('/analyze', function(req, res) {
     // define repo to clone
     const repo = req.body.repoLink;
+    const testCmd = req.body.testCmd;
     if(!repo) {
-        return res.status(402).send("Repository link was invalid");
+        return res.status(402).send("Repository link is invalid");
+    }
+    if(!testCmd) {
+        return res.status(403).send("Test command is invalid");
     }
 
     // delete the repo directory if already cloned before
@@ -246,10 +250,9 @@ app.post('/analyze', function(req, res) {
 
             // call graph
 
-            // run time
-            // analyze.injectPythonCode();
-
-            // memory
+            // run-time & memory analysis
+            // analysisResult[0]: runtime, analysisResult[1]: memory
+            let analysisResult = analyze.injectAndAnalyzeCode(testCmd); 
 
             // join the data into a JSON
 

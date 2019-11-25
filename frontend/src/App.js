@@ -6,6 +6,7 @@ import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import _ from 'lodash';
+import { throws } from 'assert';
 
 class App extends React.Component {
   constructor(props) {
@@ -21,13 +22,14 @@ class App extends React.Component {
       currentNode: null,
       familyNodes: [],
       familyLinks: [],
-      repoLink: 'https://github.com/dnephin/Sudoku-Solver'
+      repoLink: 'https://github.com/dnephin/Sudoku-Solver',
+      testCmd: 'python test.py'
     }
   }
 
   analyzeRepo() {
     // console.log("analyze repo! " + this.state.repoLink)
-    axios.post(`http://localhost:3001/analyze`, {repoLink: this.state.repoLink})
+    axios.post(`http://localhost:3001/analyze`, {repoLink: this.state.repoLink, testCmd: this.state.testCmd})
       .then(res => {
         const data = res.data;
         this.setState({data: data});
@@ -199,6 +201,18 @@ class App extends React.Component {
                 margin="normal"
                 variant="filled"
               />
+              <div style={{paddingLeft: '10px', display: 'inline'}}>
+              <TextField
+                required
+                id="test-cmd"
+                label="Test Command"
+                defaultValue={this.state.testCmd}
+                onChange={(text) => this.setState({testCmd: text})}
+                className="textField"
+                margin="normal"
+                variant="filled"
+              />
+              </div>
             </form>
             <div style={{paddingLeft: '10px'}}>
               <Button 

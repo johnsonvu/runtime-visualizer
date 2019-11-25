@@ -1,4 +1,5 @@
 const fs = require("fs");
+const shell = require('shelljs');
 
 var fileNameArray = new Array();
 // key: module_name.function_name
@@ -9,14 +10,61 @@ var functionMemoryMap = new Map();
 // key: module_name.function_name ; value: 
 
 // to start fileParser, can delete once memory_profiler output connected
-var filePath = "./example/LibraryBook/logfile.txt";
+var logfilePath = __dirname + "/repo/logfile.txt";
+
+function analyzeMemoryUsage(pythonFiles, inputInfo, testCommand){
+    pythonFiles.forEach((file) => injectAnalysisTool(file));
+    //execute tests
+    shell.exec("cd analyze/repo && " + testCommand);
+    //get results
+    parseLogFile(logfilePath);
+    //return results
+    return functionMemoryMap;
+}
+
+function injectAnalysisTool(filePath){
+    console.log('Analyzing memory usage in ' + filePath);
+    let contents = fs.readFileSync(filePath, 'utf8').split('\n').map((line)=>line.replace(/    /g, '\t'));
+    let modifiedContent = injectReflectionCode(contents);
+    fs.writeFileSync(filePath, modifiedContent);
+}
+
+function injectReflectionCode(fileContent){
+    let modifiedContent = [];
+    let curDir = __dirname;
+    modifiedContent.push('from memory_profiler import profile\r');
+    // log all memory logs into single file
+    modifiedContent.push('fp=open(\''+ curDir + '/repo/logfile.txt\',\'w+\')\r');
+    for(let i = 0; i <fileContent.length; i++ ){
+        let line = fileContent[i];
+        if(line.trim().startsWith('def')){
+            let numTabs = countTabs(line);
+            modifiedContent.push('\t'.repeat(numTabs) + '@profile(precision=7,stream=fp)\r');
+        }
+        modifiedContent.push(line);
+    }
+    //console.log(modifiedContent);
+    let stringContent = '';
+    for(let i = 0; i <modifiedContent.length; i++ ){
+        stringContent = stringContent.concat(modifiedContent[i]+'\n');
+    }
+    return stringContent
+}
+
+function countTabs(line){
+    let i = 0;
+    let count = 0;
+    while(line.charAt(i++) === '\t'){
+      count++;
+    }
+
+    return count;
+}
 
 // Parse memory profiler output file (assuming written file)
 // Split .txt file by function by splitting on regex
 // Filter out null, empty, or undefined values from each array
-// TODO: connect memory_profiler output to this input
-// TODO: connect map outputs back to analyzer / frontend
-function parseFile(path) {
+function parseLogFile(path) {
     // Split on longer regex to avoid potential errors caused by splitting on strings within LineContents column of the table
     let regexFileNameHeader = RegExp("Filename: .*\n\nLine #    Mem usage    Increment   Line Contents\n================================================", "g");
 
@@ -29,8 +77,6 @@ function parseFile(path) {
         return e;
     });
     parseAllTables(functions);
-    // TODO: could either return maps here, or have the maps be explicitly accessible through another function
-    console.log(functionMemoryMap);
 }
 
 // Read filenames in order
@@ -77,26 +123,24 @@ function parseFunction(fnLines,filename){
                 fnMemStart = fnMemCurr;
             } else if (index==array.length-1){
                 fnMemEnd = fnMemCurr-fnMemStart;
-            } else {
-                fnMemPeak = Math.max(fnMemPeak, fnMemCurr-fnMemStart);
             }
-            
+            fnMemPeak = Math.max(fnMemPeak, fnMemCurr);
         }
     });
     insertFunctionIntoMaps(fnName,fnMemPeak,fnMemEnd);
 }
 
-// TODO: unsure if we need fnMemEnd, can decide if we want an array of values attached to the key, or just a single value
 function insertFunctionIntoMaps(fnName,fnMemPeak,fnMemEnd) {
-    if(functionMemoryMap.get(fnName)){
-        let setPeakVal = functionMemoryMap.get(fnName)[0];
-        let setEndVal = functionMemoryMap.get(fnName)[1];
-        let newVals = [Math.max(setPeakVal,fnMemPeak),setEndVal+fnMemEnd];
-        functionMemoryMap.set(fnName,newVals);
-    } else {
-        let setVals = [fnMemPeak,fnMemEnd];
-        functionMemoryMap.set(fnName,setVals);
-    }
+    // if(functionMemoryMap.get(fnName)){
+    //     let setPeakVal = functionMemoryMap.get(fnName)[0];
+    //     let setEndVal = functionMemoryMap.get(fnName)[1];
+    //     let newVals = [Math.max(setPeakVal,fnMemPeak),setEndVal+fnMemEnd];
+    //     functionMemoryMap.set(fnName,newVals);
+    // } else {
+    //     let setVals = [fnMemPeak,fnMemEnd];
+    //     functionMemoryMap.set(fnName,setVals);
+    // }
+    functionMemoryMap.set(fnName,fnMemPeak);
 }
-// to run while testing, can remove aftwards
-parseFile(filePath);
+
+module.exports = { analyzeMemoryUsage: analyzeMemoryUsage };

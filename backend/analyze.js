@@ -1,11 +1,16 @@
 const fs = require('fs');
 const inputAnalyzer = require('./analyze/inputAnalysis.js');
 const runtimeAnalyzer = require('./analyze/runtimeAnalysis.js');
+const memoryAnalyzer = require('./analyze/memoryAnalysis');
 
-const injectPythonCode = () => {
-    let pythonFiles = findPythonFiles(__dirname + '/analyze');
+// invokes runtime and memory analysis and outputs their results
+const injectAndAnalyzeCode = (testCommand) => {
+    let pythonFiles = findPythonFiles(__dirname + '/analyze/repo');
     // let inputInfo = inputAnalyzer.getInputInfo(pythonFiles);
-    // runtimeAnalyzer.analyzeRuntime(pythonFiles, inputInfo);
+    // let runtimeResult = runtimeAnalyzer.analyzeRuntime(pythonFiles, inputInfo, testCommand);
+    let memoryResult = memoryAnalyzer.analyzeMemoryUsage(pythonFiles, null, testCommand);
+    // console.log(memoryResult);
+    return [null, memoryResult];
 }
 
 function findPythonFiles(directory){
@@ -13,7 +18,8 @@ function findPythonFiles(directory){
     fs.readdirSync(directory)
         .forEach((fileName) => {
             let fullFilePath = directory + '/' + fileName
-            if(fullFilePath.endsWith('.py')){
+            // excludes any tests files from injection
+            if(fullFilePath.endsWith('.py') && !fullFilePath.toLowerCase().includes("test")){
                 pythonFiles.push(fullFilePath);
             }
             else if(fs.statSync(fullFilePath).isDirectory()){
@@ -25,4 +31,4 @@ function findPythonFiles(directory){
     return pythonFiles;
 }
 
-module.exports = { injectPythonCode: injectPythonCode };
+module.exports = { injectAndAnalyzeCode: injectAndAnalyzeCode };
