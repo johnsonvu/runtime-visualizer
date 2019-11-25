@@ -24,7 +24,8 @@ class App extends React.Component {
       familyLinks: [],
       repoLink: 'https://github.com/dnephin/Sudoku-Solver',
       testCmd: 'python test.py',
-      analyzingState: false
+      analyzingState: false,
+      pause: false,
     }
   }
 
@@ -64,19 +65,23 @@ class App extends React.Component {
 
     // builds a list of the path to leaf child
     if(node) {
-      // add root
-      this.state.familyNodes.push(node.id);
       this.addFamilyNodes(node.id);
     }
   }
 
   addFamilyNodes(nodeId) {
+      // add root
+      this.state.familyNodes.push(nodeId);
       // determine family nodes
       var childNodes = this.getChildNodes(nodeId);
       if (childNodes != null) {
         childNodes.forEach((nodeId) => {
           this.state.familyNodes.push(nodeId);
-          this.addFamilyNodes(nodeId);
+
+          // prevent cylic search
+          if(this.state.familyNodes.indexOf(nodeId) < 0) {
+            this.addFamilyNodes(nodeId);
+          }
         });
       }
   }
@@ -85,6 +90,7 @@ class App extends React.Component {
     // applies the distance to the links dynamically after mounting
     const graph = this.graphRef.current;
     graph.d3Force('link').distance(link => link.distance).iterations(30);
+    graph.d3Force('charge').strength(-200);
   }
 
   // check if the node is a child of the current node
@@ -256,6 +262,8 @@ class App extends React.Component {
               linkDirectionalParticleColor="blue"
               linkCanvasObject={renderLink}
               linkCanvasObjectMode={()=> 'after'}
+              d3VelocityDecay={0.9}
+              d3AlphaDecay={0.7}
               onNodeHover={(node, prevNode) => {this.selectCurrentNode(node)} }
             />
           </div>

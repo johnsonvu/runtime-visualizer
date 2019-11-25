@@ -18,7 +18,7 @@ function analyzeRuntime(pythonFiles, subFolderDictionary, testCommand){
     testFiles.forEach(injectCodeAnalyzer);
     //testFiles.forEach(runUnitTests);
     //execute tests
-    const command = "cd analyze/repo && " + testCommand //+ " &> /dev/null";
+    const command = "cd analyze/repo && " + testCommand + " &> /dev/null";
     // console.log("command is: " + command);
     // console.log("HELLLLLLLLLLOOOOOOOOOOOOOOOOO LEOOOOOOOOOOOOOOOOOOOOONSOOOOOOOOOOOOOOOOON1111111111");
     shell.exec(command);
@@ -34,7 +34,7 @@ function analyzeRuntime(pythonFiles, subFolderDictionary, testCommand){
 }
 
 function injectAnalysisTool(filePath){
-    console.log('Analyzing runtime in ' + filePath + '\n');
+    console.log('Analyzing runtime in ' + filePath);
     let contents = fs.readFileSync(filePath, 'utf8').split('\n').map((line)=>line.replace(/    /g, '\t'));
     let modifiedContent = injectReflectionCode(contents, filePath ,subFolderDict[filePath]);
     fs.writeFileSync(filePath, modifiedContent);

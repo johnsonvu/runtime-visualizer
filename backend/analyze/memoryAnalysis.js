@@ -16,7 +16,7 @@ function analyzeMemoryUsage(pythonFiles, testCommand){
     let nonTestFiles = findNonTestFiles(pythonFiles);
     nonTestFiles.forEach((file) => injectAnalysisTool(file));
     //execute tests
-    const command = "cd analyze/repo && " + testCommand + //" &> /dev/null";
+    const command = "cd analyze/repo && " + testCommand + " &> /dev/null";
     shell.exec(command);
     //get results
     parseLogFile(logfilePath);
