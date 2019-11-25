@@ -3,7 +3,7 @@ var currentWorkingFunction = null;
 var dictionary = {};
 
 function getInputInfo(pythonFiles){
-    let info = pythonFiles.map(pythonFile => { return { file: pythonFile, info: extractInfo(pythonFile) }; })};
+    let info = pythonFiles.map(pythonFile => { return { file: pythonFile, info: extractInfo(pythonFile) }; });
     return info;
 }
 
@@ -14,7 +14,6 @@ function extractInfo(pythonFile){
 
     let newFunctionRegExp = /[\t\n]def\s/;
     let varDecRegExp = /[^\!\=]=[^=]/;
-    let functionCallRegExp = /[^\!\=]=[^=]/;
     
     for(let line of lines){
         if(varDecRegExp.test(line)){

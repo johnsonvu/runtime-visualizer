@@ -8,6 +8,7 @@ function analyzeRuntime(pythonFiles, inputInfo){
 }
 
 function injectAnalysisTool(filePath){
+    console.log('Analyzing runtimes in ' + pythonFile + '\n');
     let contents = fs.readFileSync(filePath, 'utf8').split('\n').map((line)=>line.replace(/    /g, '\t'));
     let modifiedContent = injectReflectionCode(contents);
     fs.writeFileSync(filePath, modifiedContent);
