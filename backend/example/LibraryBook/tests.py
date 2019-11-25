@@ -39,6 +39,15 @@ class TestBook(unittest.TestCase):
 		print "\nBooks Test Tear Down"
 		
 	def test_findTopThreeAverageRating(self):
+		codeAnalyzer.appendTestData()
+		print "Test - Top Three Average Rating"
+		start = timer()
+		self.assertEqual(self.EOSC112.findTopThreeAverageRating(), 84)
+		end = timer()
+		print "Time Elapsed: {}".format(end - start)
+		self.assertEqual(self.EOSC112.getLowestRating(), 13)
+		
+	def test_findTopThreeAverageRating11111111111111111(self):
 		print "Test - Top Three Average Rating"
 		start = timer()
 		self.assertEqual(self.EOSC112.findTopThreeAverageRating(), 84)

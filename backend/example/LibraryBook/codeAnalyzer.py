@@ -1,8 +1,11 @@
 import json
 
 class CodeAnalyzer:
+
 	def __init__(self):
 		self.callOccurrence = {}
+		self.JsonData = {}
+
 
 	def getCallOccurrence(self):
 		return self.callOccurrence
@@ -13,22 +16,25 @@ class CodeAnalyzer:
 		else:
 			self.callOccurrence[key] += 1
 
-	def createJsonFile(self):
-		callAnalysis = {}
-		callAnalysis['data'] = []
+	def appendTestData(self, testName):
+		self.JsonData[testName] = []
 		for key in self.callOccurrence:
 			try:
-				callAnalysis['data'].append({
+				self.JsonData[testName].append({
 					'caller': key.split('@')[0],
 					'callee': key.split('@')[1],
 					'occurance': self.callOccurrence[key]
 				})
 			except:
 				continue
-		json_data = json.dumps(callAnalysis, indent=4)
+		self.callOccurrence = {}
+
+	def createJsonFile(self):
+		json_data = json.dumps(self.JsonData, indent=4)
 		print json_data
 		with open('data.txt', 'w') as outfile:
 			json.dump(json_data, outfile)
+
 
 #Instantiate static class  
 codeAnalyzer = CodeAnalyzer()
