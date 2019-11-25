@@ -2,10 +2,10 @@ const fs = require('fs');
 const inputAnalyzer = require('./analyze/inputAnalysis.js');
 const runtimeAnalyzer = require('./analyze/runtimeAnalysis.js');
 
-const injectPythonCode = () => {
+const doAnalysis = () => {
     let pythonFiles = findPythonFiles(__dirname + '/analyze');
     // let inputInfo = inputAnalyzer.getInputInfo(pythonFiles);
-    // runtimeAnalyzer.analyzeRuntime(pythonFiles, inputInfo);
+    runtimeAnalyzer.analyzeRuntime(pythonFiles);
 }
 
 function findPythonFiles(directory){
@@ -25,4 +25,4 @@ function findPythonFiles(directory){
     return pythonFiles;
 }
 
-module.exports = { injectPythonCode: injectPythonCode };
+module.exports = doAnalysis;
