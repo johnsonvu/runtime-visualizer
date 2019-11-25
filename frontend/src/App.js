@@ -5,6 +5,7 @@ import axios from 'axios';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import Loader from 'react-loader-spinner'
 import _ from 'lodash';
 
 class App extends React.Component {
@@ -22,16 +23,21 @@ class App extends React.Component {
       familyNodes: [],
       familyLinks: [],
       repoLink: 'https://github.com/dnephin/Sudoku-Solver',
-      testCmd: 'python test.py'
+      testCmd: 'python test.py',
+      analyzingState: false
     }
   }
 
   analyzeRepo() {
     // console.log("analyze repo! " + this.state.repoLink)
+    this.setState({analyzingState: true});
     axios.post(`http://localhost:3001/analyze`, {repoLink: this.state.repoLink, testCmd: this.state.testCmd})
       .then(res => {
         const data = res.data;
-        this.setState({data: data});
+        this.setState({
+          data: data,
+          analyzingState: false
+        });
     });
   }
 
@@ -187,8 +193,16 @@ class App extends React.Component {
 
     return (
       <Grid container spacing={1}>
+        {this.state.analyzingState && <Loader
+          type="Oval"
+          color="#00BFFF"
+          height={80}
+          width={80}
+          timeout={0}
+          style={{position: 'absolute', margin: 'auto', left: '50%', bottom: '50%'}}
+        />}
         <Grid container item xa={12} spacing={0}>
-          <div className="Repo" style={{paddingLeft: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+          <div className="Repo" style={{height: '100%', paddingLeft: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
             <form className="container" noValidate autoComplete="off">
               <TextField
                 required
@@ -227,7 +241,7 @@ class App extends React.Component {
           </div>
         </Grid>
         <Grid container item xs={12} spacing={0}>
-          <div className="App">
+          <div style={{height: '100%'}} className="App">
             <ForceGraph2D 
               ref={this.graphRef}
               graphData={this.state.data} 
