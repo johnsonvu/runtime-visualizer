@@ -246,15 +246,10 @@ app.post('/analyze', function(req, res) {
     git().silent(true)
         .clone(repo, 'analyze/repo')
         .then(() => {
-            // once downloaded, you can trigger injection + analysis
-
-            // call graph
-
-            // run-time & memory analysis
-            // analysisResult[0]: runtime, analysisResult[1]: memory
+            // inject + analyze + run tests
             let johnsonGraph = analyze(testCmd);
 
-            console.log(JSON.stringify(johnsonGraph));
+            // console.log(JSON.stringify(johnsonGraph));
             // then post the results/data
             return res.send(JSON.stringify(johnsonGraph));
         })

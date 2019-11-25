@@ -6,27 +6,27 @@ let subFolderDict;
 
 function analyzeRuntime(pythonFiles, subFolderDictionary, testCommand){
     subFolderDict = subFolderDictionary;
-    console.log(JSON.stringify(subFolderDict));
+    // console.log(JSON.stringify(subFolderDict));
     let pythonFilesWithExclusions = findPythonFilesWithExclusions(pythonFiles);
-    console.log(pythonFilesWithExclusions);
+    // console.log(pythonFilesWithExclusions);
     pythonFilesWithExclusions.forEach(injectAnalysisTool);
     //injectAnalysisTool('C:\\Users\\Leonl\\OneDrive\\Documents\\cpsc 410\\runtime-visualizer\\backend\\example\\LibraryBook\\libraryBook.py');
 
     let testFiles = findTestFiles(pythonFiles);
-    console.log(testFiles);
+    // console.log(testFiles);
     //injectCodeAnalyzer("C:\\Users\\Leonl\\OneDrive\\Documents\\cpsc 410\\runtime-visualizer\\backend\\example\\LibraryBook\\tests.py")
     testFiles.forEach(injectCodeAnalyzer);
     //testFiles.forEach(runUnitTests);
     //execute tests
     const command = "cd analyze/repo && " + testCommand //+ " &> /dev/null";
-    console.log("command is: " + command);
-    console.log("HELLLLLLLLLLOOOOOOOOOOOOOOOOO LEOOOOOOOOOOOOOOOOOOOOONSOOOOOOOOOOOOOOOOON1111111111");
+    // console.log("command is: " + command);
+    // console.log("HELLLLLLLLLLOOOOOOOOOOOOOOOOO LEOOOOOOOOOOOOOOOOOOOOONSOOOOOOOOOOOOOOOOON1111111111");
     shell.exec(command);
-    console.log("HELLLLLLLLLLOOOOOOOOOOOOOOOOO LEOOOOOOOOOOOOOOOOOOOOONSOOOOOOOOOOOOOOOOON2222222222");
+    // console.log("HELLLLLLLLLLOOOOOOOOOOOOOOOOO LEOOOOOOOOOOOOOOOOOOOOONSOOOOOOOOOOOOOOOOON2222222222");
     //get results
-    console.log("my dir name is: " + __dirname);
+    // console.log("my dir name is: " + __dirname);
     let stringData = fs.readFileSync(__dirname + '/repo/data.txt', 'utf8');
-    console.log("HELLLLLLLLLLOOOOOOOOOOOOOOOOO LEOOOOOOOOOOOOOOOOOOOOONSOOOOOOOOOOOOOOOOON3333333333");
+    // console.log("HELLLLLLLLLLOOOOOOOOOOOOOOOOO LEOOOOOOOOOOOOOOOOOOOOONSOOOOOOOOOOOOOOOOON3333333333");
     let results = JSON.parse(JSON.parse(stringData));
     // let results = JSON.parse(JSON.parse(stringData));
     //return results
