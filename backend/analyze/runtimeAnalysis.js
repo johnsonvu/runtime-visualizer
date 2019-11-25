@@ -27,17 +27,16 @@ function analyzeRuntime(pythonFiles, subFolderDictionary, testCommand){
 function injectAnalysisTool(filePath){
     console.log('Analyzing runtime in ' + filePath + '\n');
     let contents = fs.readFileSync(filePath, 'utf8').split('\n').map((line)=>line.replace(/    /g, '\t'));
-    let modifiedContent = injectReflectionCode(contents, subFolderDict[filePath]);
+    let modifiedContent = injectReflectionCode(contents, filePath ,subFolderDict[filePath]);
     fs.writeFileSync(filePath, modifiedContent);
 }
 
-function injectReflectionCode(fileContent, fileDepth){
+function injectReflectionCode(fileContent, filePath ,fileDepth){
     let modifiedContent = [];
     let numTabs = 0;
     let functionName = null;
     let prevfunctionName = null;
     let forCount = 1;
-    
     modifiedContent.push('import sys\r');
     modifiedContent.push('sys.path.append("' + numDoubleDots(fileDepth) + 'codeAnalyzer")\r');
     modifiedContent.push('from codeAnalyzer import codeAnalyzer\r');
@@ -52,7 +51,7 @@ function injectReflectionCode(fileContent, fileDepth){
             numTabs = countTabs(line);
             functionName = line.split('def')[1].split('(')[0].trim();
             modifiedContent.push('\t'.repeat(numTabs + 1) + 'functionName = "'+ functionName +'"\r');
-            modifiedContent.push('\t'.repeat(numTabs + 1) + 'codeAnalyzer.updateCallOccurrence(inspect.stack()[1][3]+ "@" + functionName)\r');
+            modifiedContent.push('\t'.repeat(numTabs + 1) + 'codeAnalyzer.updateCallOccurrence(inspect.stack()[1][3]+ "@" + functionName + "@'+ filePath +'")\r');
         }
 
         // For Loop inside a function
@@ -71,7 +70,7 @@ function injectReflectionCode(fileContent, fileDepth){
 
     let stringContent = '';
     for(let i = 0; i <modifiedContent.length; i++ ){
-        // console.log(modifiedContent[i]);
+        //console.log(modifiedContent[i]);
         // if(modifiedContent[i].indexOf('unittest.main()') !== -1) {
         //     console.log("here");
         //     stringContent = stringContent.concat('\tprint("LMAO")\n'); 
@@ -88,7 +87,6 @@ function numDoubleDots(num){
     }
     return dots;
 }
-
 
 function countTabs(line){
     let i = 0;
@@ -107,10 +105,9 @@ function findTestFiles(filePaths){
 
 function findPythonFilesWithExclusions(filePaths){
     return filePaths.filter((filePath) => {
-        return !filePath.toLowerCase().includes("test") && filePath.includes("codeAnalyzer.py");
+        return !filePath.toLowerCase().includes("test") && !filePath.includes("codeAnalyzer.py");
     });
 }
-
 
 function injectCodeAnalyzer(filePath){
     let contents = fs.readFileSync(filePath, 'utf8').split('\n').map((line)=>line.replace(/    /g, '\t'));
