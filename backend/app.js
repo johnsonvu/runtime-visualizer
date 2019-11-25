@@ -80,6 +80,151 @@ const exampleData = {
     ]
 };
 
+let max = 764;
+let scale = max/128;
+
+const userTestData = {
+    "nodes": [
+        {
+            "id": "0",
+            "name": "__main__",
+            "color": "green",
+            "val": 200,
+            "metadata": {
+                "Lines": 20
+            }
+        },
+        {
+            "id": "1",
+            "name": "findTopThreeAverageRating()",
+            "color": "green",
+            "val": 20,
+            "metadata": {
+                "Lines": 20,
+                "Inputs": "self",
+                "Input Types": "object",
+                "Calls": 1
+            }
+        },
+        {
+            "id": "2",
+            "name": "forloop1",
+            "color": "green",
+            "val": 10,
+            "metadata": {
+                "Lines": 5,
+                "Inputs": "self.mylist",
+                "Input Types": "array",
+                "Calls": 23
+            }
+        },
+        {
+            "id": "3",
+            "name": "forloop2",
+            "color": "yellow",
+            "val": 10,
+            "metadata": {
+                "Lines": 5,
+                "Inputs": "self.mylist",
+                "Input Types": "array",
+                "Calls": 266
+            }
+        },
+        {
+            "id": "4",
+            "name": "forloop3",
+            "color": "red",
+            "val": 10,
+            "metadata": {
+                "Lines": 5,
+                "Inputs": "self.mylist",
+                "Input Types": "array",
+                "Calls": 764
+            }
+        },
+        {
+            "id": "5",
+            "name": "sumThreeNumbers",
+            "color": "green",
+            "val": 3,
+            "metadata": {
+                "Lines": 1,
+                "Inputs": "self, largest1, largest2, largest3",
+                "Input Types": "array, number, number, number",
+                "Calls": 1
+            }
+        },
+        {
+            "id": "9000",
+            "name": "getLowestRating()",
+            "color": "green",
+            "val": 3,
+            "metadata": {
+                "Lines": 1,
+                "Inputs": "self",
+                "Input Types": "object",
+                "Calls": 1
+            }
+        }
+    ],
+    "links": [
+        {
+            "id": "1",
+            "source": "1",
+            "target": "2",
+            "width": 23,
+            "color": "#999",
+            "distance": 100/scale+1,
+            "name": "23 calls average"
+        },
+        {
+            "id": "2",
+            "source": "2",
+            "target": "3",
+            "width": 266/scale+1,
+            "color": "#999",
+            "distance": 100,
+            "name": "12.5 calls average"
+        },
+        {
+            "id": "3",
+            "source": "3",
+            "target": "4",
+            "width": 764/scale+1,
+            "color": "#999",
+            "distance": 100,
+            "name": "6.25 calls average"
+        },
+        {
+            "id": "4",
+            "source": "1",
+            "target": "5",
+            "width": 1/scale+1,
+            "color": "#999",
+            "distance": 100,
+            "name": "1 call average"
+        },
+        {
+            "id": "9000",
+            "source": "0",
+            "target": "1",
+            "width": 1/scale+1,
+            "color": "#999",
+            "distance": 100,
+            "name": "1 call average"
+        },
+        {
+            "id": "9001",
+            "source": "0",
+            "target": "9000",
+            "width": 1/scale+1,
+            "color": "#999",
+            "distance": 100,
+            "name": "1 call average"
+        }
+    ]
+};
+
 app.get('/',function(req,res){
     res.send("It's working!");
 });
@@ -102,14 +247,14 @@ app.post('/analyze', function(req, res) {
             // call graph
 
             // run time
-            analyze.injectPythonCode();
+            // analyze.injectPythonCode();
 
             // memory
 
             // join the data into a JSON
 
             // then post the results/data
-            return res.send(JSON.stringify(exampleData));
+            return res.send(JSON.stringify(userTestData));
         })
         .catch((err) => {return res.status(401).send("There was an error cloning " + err)});
 });
