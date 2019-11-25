@@ -1,5 +1,5 @@
 const fs = require('fs');
-const inputAnalyzer = require('./analyze/inputAnalysis.js');
+const callGraphGenerator = require('./analyze/callGraph.js');
 const runtimeAnalyzer = require('./analyze/runtimeAnalysis.js');
 const memoryAnalyzer = require('./analyze/memoryAnalysis');
 
@@ -7,13 +7,21 @@ const memoryAnalyzer = require('./analyze/memoryAnalysis');
 const doAnalysis = (testCommand) => {
     let pythonFiles = findPythonFiles(__dirname + '/analyze/repo');
     // let inputInfo = inputAnalyzer.getInputInfo(pythonFiles);
+    let callGraph = callGraphGenerator.makeCallGraph(pythonFiles);
+    let johnsonGraph = callGraphGenerator.toJohnsonGraph(callGraph);
     // let runtimeResult =  runtimeAnalyzer.analyzeRuntime(pythonFiles, testCommand);
     console.log("Runtime analysis completed.")
-    let memoryResult = memoryAnalyzer.analyzeMemoryUsage(pythonFiles, testCommand);
+    // let memoryResult = memoryAnalyzer.analyzeMemoryUsage(pythonFiles, testCommand); 
     console.log("Memory analysis completed.")
     // console.log(memoryResult);
     console.log("Analysis completed.");
-    return [null, memoryResult];
+
+    // return [null, memoryResult];
+    
+    // runtimeAnalyzer.analyzeRuntime(pythonFiles, subFolderDict);
+
+    // console.log(JSON.stringify(johnsonGraph));
+    return johnsonGraph;
 }
 
 function findPythonFiles(directory){

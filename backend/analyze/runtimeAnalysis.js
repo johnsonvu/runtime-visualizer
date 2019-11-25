@@ -88,14 +88,15 @@ function findTestFiles(filePaths){
 }
 
 function runUnitTests(filePath){
-    // let test = spawnSync('python', [filePath]);
-    // test.stdout.on('data', (data) => {
-    //     console.log("data is: " + data);
-    // });
-    // test.stderr.on('data', (data) => {
-    //     console.log("data is: " + data);
-    // });
-    // console.log('done');
+    console.log('start');
+    let test = spawnSync('python', ["C:/Users/Justin Kwan/Desktop/cs410/runtime-visualizer/backend/justintest.py"]);
+    test.stdout.on('data', (data) => {
+        console.log("data is: " + data);
+    });
+    test.stderr.on('data', (data) => {
+        console.log("data is: " + data);
+    });
+    console.log('done');
 }
 
 module.exports = { analyzeRuntime: analyzeRuntime };
