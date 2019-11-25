@@ -1,9 +1,10 @@
 const fs = require('fs');
+const shell = require('shelljs');
 const { spawnSync } = require('child_process');
 
 let subFolderDict;
 
-function analyzeRuntime(pythonFiles, subFolderDictionary){
+function analyzeRuntime(pythonFiles, subFolderDictionary, testCommand){
     subFolderDict = subFolderDictionary;
     console.log(JSON.stringify(subFolderDict));
     pythonFiles.forEach(injectAnalysisTool);
@@ -14,8 +15,10 @@ function analyzeRuntime(pythonFiles, subFolderDictionary){
     testFiles.forEach(injectCodeAnalyzer);
     //testFiles.forEach(runUnitTests);
     //execute tests
+    shell.exec("cd analyze/repo && " + testCommand);
     //get results
     //return results
+    return new Map();
 }
 
 function injectAnalysisTool(filePath){
@@ -35,7 +38,6 @@ function injectReflectionCode(fileContent, fileDepth){
     modifiedContent.push('import sys\r');
     modifiedContent.push('sys.path.append("' + numDoubleDots(fileDepth) + 'codeAnalyzer")\r');
     modifiedContent.push('from codeAnalyzer import codeAnalyzer\r');
-    modifiedContent.push('from memory_profiler import profile\r');
     modifiedContent.push('import inspect\r');
     
     for(let i = 0; i <fileContent.length; i++ ){

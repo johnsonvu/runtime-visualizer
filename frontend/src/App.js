@@ -5,6 +5,7 @@ import axios from 'axios';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import Loader from 'react-loader-spinner'
 import _ from 'lodash';
 
 class App extends React.Component {
@@ -21,29 +22,37 @@ class App extends React.Component {
       currentNode: null,
       familyNodes: [],
       familyLinks: [],
-      repoLink: 'https://github.com/dnephin/Sudoku-Solver'
+      repoLink: 'https://github.com/dnephin/Sudoku-Solver',
+      testCmd: 'python test.py',
+      analyzingState: false
     }
   }
 
   analyzeRepo() {
     // console.log("analyze repo! " + this.state.repoLink)
-    axios.post(`http://localhost:3001/analyze`, {repoLink: this.state.repoLink})
+    this.setState({analyzingState: true});
+    axios.post(`http://localhost:3001/analyze`, {repoLink: this.state.repoLink, testCmd: this.state.testCmd})
       .then(res => {
         const data = res.data;
-        this.setState({data: data});
+        this.setState({
+          data: data,
+          analyzingState: false
+        });
     });
   }
 
-  isASourceNode(nodeId) {
+  getChildNodes(nodeId) {
+    var nodes = []
     if(this.state.data.links) {
       for(var i = 0; i < this.state.data.links.length; i++) {
         if(this.state.data.links[i].source.id === nodeId) {
           // console.log("source id " + this.state.data.links[i].source.id);
           // console.log("target id " + this.state.data.links[i].target.id);
           this.state.familyLinks.push(this.state.data.links[i]); // keep track of all the links in the path
-          return this.state.data.links[i].target.id; // next node we need to look up
+          nodes.push(this.state.data.links[i].target.id);
         }
       }
+      return nodes;
     }
     return null;
   }
@@ -56,16 +65,20 @@ class App extends React.Component {
     // builds a list of the path to leaf child
     if(node) {
       // add root
-      var currentNode = node.id;
-      this.state.familyNodes.push(currentNode);
-      
-      // determine family nodes
-      currentNode = this.isASourceNode(currentNode);
-      while(currentNode != null) {
-        this.state.familyNodes.push(currentNode);
-        currentNode = this.isASourceNode(currentNode);
-      }
+      this.state.familyNodes.push(node.id);
+      this.addFamilyNodes(node.id);
     }
+  }
+
+  addFamilyNodes(nodeId) {
+      // determine family nodes
+      var childNodes = this.getChildNodes(nodeId);
+      if (childNodes != null) {
+        childNodes.forEach((nodeId) => {
+          this.state.familyNodes.push(nodeId);
+          this.addFamilyNodes(nodeId);
+        });
+      }
   }
 
   componentDidMount() {
@@ -104,7 +117,7 @@ class App extends React.Component {
       // node name
       ctx.fillStyle = "black";
       ctx.font = "bold 7px Georgia";
-      ctx.fillText(node.name, node.x, (isChild && node.metadata) ? node.y-(node.val/3) : node.y);
+      ctx.fillText(node.name, node.x, node.y);
       
       // metadata
       if(isChild) {
@@ -117,12 +130,12 @@ class App extends React.Component {
           // render metadata bg
           ctx.globalAlpha = 0.7;
           ctx.fillStyle = "gray";
-          ctx.fillRect(node.x-width/2, node.y-(node.val/3)+7*i-2.5, width, 6);
+          ctx.fillRect(node.x-width/2, node.y+7*i-2.5, width, 6);
 
           // render metadata text
           ctx.globalAlpha = 1;
           ctx.fillStyle = "black";
-          ctx.fillText(txt, node.x, node.y-(node.val/3)+7*i);
+          ctx.fillText(txt, node.x, node.y+7*i);
           i++;
         });
 
@@ -180,8 +193,16 @@ class App extends React.Component {
 
     return (
       <Grid container spacing={1}>
+        {this.state.analyzingState && <Loader
+          type="Oval"
+          color="#00BFFF"
+          height={80}
+          width={80}
+          timeout={0}
+          style={{position: 'absolute', margin: 'auto', left: '50%', bottom: '50%'}}
+        />}
         <Grid container item xa={12} spacing={0}>
-          <div className="Repo" style={{paddingLeft: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+          <div className="Repo" style={{height: '100%', paddingLeft: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
             <form className="container" noValidate autoComplete="off">
               <TextField
                 required
@@ -193,6 +214,18 @@ class App extends React.Component {
                 margin="normal"
                 variant="filled"
               />
+              <div style={{paddingLeft: '10px', display: 'inline'}}>
+              <TextField
+                required
+                id="test-cmd"
+                label="Test Command"
+                defaultValue={this.state.testCmd}
+                onChange={(text) => this.setState({testCmd: text})}
+                className="textField"
+                margin="normal"
+                variant="filled"
+              />
+              </div>
             </form>
             <div style={{paddingLeft: '10px'}}>
               <Button 
@@ -208,7 +241,7 @@ class App extends React.Component {
           </div>
         </Grid>
         <Grid container item xs={12} spacing={0}>
-          <div className="App">
+          <div style={{height: '100%'}} className="App">
             <ForceGraph2D 
               ref={this.graphRef}
               graphData={this.state.data} 
@@ -220,6 +253,7 @@ class App extends React.Component {
               nodeCanvasObject={renderNode}
               nodeCanvasObjectMode={()=> 'after'}
               linkLabel={() => ''}
+              linkDirectionalParticleColor="blue"
               linkCanvasObject={renderLink}
               linkCanvasObjectMode={()=> 'after'}
               onNodeHover={(node, prevNode) => {this.selectCurrentNode(node)} }

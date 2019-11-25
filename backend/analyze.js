@@ -1,21 +1,27 @@
 const fs = require('fs');
 const inputAnalyzer = require('./analyze/inputAnalysis.js');
 const runtimeAnalyzer = require('./analyze/runtimeAnalysis.js');
+const memoryAnalyzer = require('./analyze/memoryAnalysis');
 
 var subFolderDict = {};
-
-const doAnalysis = () => {
-    let pythonFiles = findPythonFiles(__dirname + '/analyze', 0);
+// invokes runtime and memory analysis and outputs their results
+const doAnalysis = (testCommand) => {
+    let pythonFiles = findPythonFiles(__dirname + '/analyze/repo', 1);
     // let inputInfo = inputAnalyzer.getInputInfo(pythonFiles);
-    runtimeAnalyzer.analyzeRuntime(pythonFiles, subFolderDict);
+    let runtimeResult =  runtimeAnalyzer.analyzeRuntime(pythonFiles, subFolderDict, testCommand);
+    let memoryResult = memoryAnalyzer.analyzeMemoryUsage(pythonFiles, testCommand);
+    // console.log(memoryResult);
+    console.log("Analysis completed.");
+    return [null, memoryResult];
 }
 
 function findPythonFiles(directory, level){
     let pythonFiles = [];
     fs.readdirSync(directory)
         .forEach((fileName) => {
-            let fullFilePath = directory + '/' + fileName;
-            if(fullFilePath.endsWith('.py')){
+            let fullFilePath = directory + '/' + fileName
+            // excludes any tests files from injection
+            if(fullFilePath.endsWith('.py') && !fullFilePath.toLowerCase().includes("test")){
                 pythonFiles.push(fullFilePath);
                 subFolderDict[fullFilePath] = level;
             }

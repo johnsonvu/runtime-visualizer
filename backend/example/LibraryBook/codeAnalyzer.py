@@ -1,5 +1,3 @@
-import json
-
 class CodeAnalyzer:
 	def __init__(self):
 		self.callOccurrence = {}
@@ -40,16 +38,10 @@ codeAnalyzer = CodeAnalyzer()
 #Inject calls
 	#import inspect
 	#from codeAnalyzer import codeAnalyzer
+	#codeAnalyzer.updateCallOccurrence(inspect.stack()[1][3])
 
-	#functionName = functionname  					
-	#caller = inspect.stack()[1][3]
+	#functionName = inspect.stack()[1][3]
+	#codeAnalyzer.updateCallOccurrence("{} - For Loop lvl 1".format(inspect.stack()[1][3]))
 
-	# Need to implement this
-	#caller = inspect.stack()[1][3]
-	#codeAnalyzer.updateCallOccurrence("{}@{}".format(caller, functionName))
-		#OR for Loops 
-	#codeAnalyzer.updateCallOccurrence("{}@For-1".format(functionName))
-
-	#Need to inject 	
 	#Caller					#Callee
 	#inspect.stack()[1][3], inspect.stack()[0][3]
