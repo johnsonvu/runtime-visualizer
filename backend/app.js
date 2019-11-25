@@ -252,12 +252,10 @@ app.post('/analyze', function(req, res) {
 
             // run-time & memory analysis
             // analysisResult[0]: runtime, analysisResult[1]: memory
-            let analysisResult = analyze(testCmd);
-
-            // join the data into a JSON
+            let johnsonGraph = analyze(testCmd);
 
             // then post the results/data
-            return res.send(JSON.stringify(userTestData));
+            return res.send(JSON.stringify(johnsonGraph));
         })
         .catch((err) => {return res.status(401).send("There was an error cloning " + err)});
 });

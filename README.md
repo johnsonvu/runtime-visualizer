@@ -13,9 +13,17 @@ Enter a Python project repository and the command to execute tests, then voila!
     * Memory analysis code injection
 
 2. Justin Kwan
+    * Call graph generation
+    * Run-time injection and analysis
+    * Back-end configuration
 3. Leon Lui
+    * Run-time injection and analysis
+        * Create data structure to keep track of function calls
+    * Example code mock-up
 4. MengXin Zhao
 5. Varun Belani
+    * Memory analysis
+    * Project video
 
 ## Running the application
 First install `docker` and `docker-compose`

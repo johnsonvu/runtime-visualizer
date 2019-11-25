@@ -18,10 +18,14 @@ function analyzeRuntime(pythonFiles, subFolderDictionary, testCommand){
     testFiles.forEach(injectCodeAnalyzer);
     //testFiles.forEach(runUnitTests);
     //execute tests
-    shell.exec("cd analyze/repo && " + testCommand);
+    const command = "cd analyze/repo && " + testCommand + " &> /dev/null";
+    console.log("command is: " + command);
+    shell.exec(command);
     //get results
+    let stringData = fs.readFileSync(__dirname__ + '/repo/data.txt', 'utf8');
+    let results = JSON.parse(stringData);
     //return results
-    return new Map();
+    return results;
 }
 
 function injectAnalysisTool(filePath){
@@ -70,11 +74,7 @@ function injectReflectionCode(fileContent, filePath ,fileDepth){
 
     let stringContent = '';
     for(let i = 0; i <modifiedContent.length; i++ ){
-        //console.log(modifiedContent[i]);
-        // if(modifiedContent[i].indexOf('unittest.main()') !== -1) {
-        //     console.log("here");
-        //     stringContent = stringContent.concat('\tprint("LMAO")\n'); 
-        // }
+        console.log(modifiedContent[i]);
         stringContent = stringContent.concat(modifiedContent[i]+'\n');
     }
     return stringContent;
@@ -172,14 +172,15 @@ function writeCodeAnalyzer(contents, fileDepth){
 }
 
 function runUnitTests(filePath){
-    // let test = spawnSync('python', [filePath]);
-    // test.stdout.on('data', (data) => {
-    //     console.log("data is: " + data);
-    // });
-    // test.stderr.on('data', (data) => {
-    //     console.log("data is: " + data);
-    // });
-    // console.log('done');
+    console.log('start');
+    let test = spawnSync('python', ["C:/Users/Justin Kwan/Desktop/cs410/runtime-visualizer/backend/justintest.py"]);
+    test.stdout.on('data', (data) => {
+        console.log("data is: " + data);
+    });
+    test.stderr.on('data', (data) => {
+        console.log("data is: " + data);
+    });
+    console.log('done');
 }
 
 module.exports = { analyzeRuntime: analyzeRuntime };
