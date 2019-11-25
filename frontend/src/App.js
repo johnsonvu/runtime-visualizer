@@ -34,16 +34,18 @@ class App extends React.Component {
     });
   }
 
-  isASourceNode(nodeId) {
+  getChildNodes(nodeId) {
+    var nodes = []
     if(this.state.data.links) {
       for(var i = 0; i < this.state.data.links.length; i++) {
         if(this.state.data.links[i].source.id === nodeId) {
           // console.log("source id " + this.state.data.links[i].source.id);
           // console.log("target id " + this.state.data.links[i].target.id);
           this.state.familyLinks.push(this.state.data.links[i]); // keep track of all the links in the path
-          return this.state.data.links[i].target.id; // next node we need to look up
+          nodes.push(this.state.data.links[i].target.id);
         }
       }
+      return nodes;
     }
     return null;
   }
@@ -56,16 +58,20 @@ class App extends React.Component {
     // builds a list of the path to leaf child
     if(node) {
       // add root
-      var currentNode = node.id;
-      this.state.familyNodes.push(currentNode);
-      
-      // determine family nodes
-      currentNode = this.isASourceNode(currentNode);
-      while(currentNode != null) {
-        this.state.familyNodes.push(currentNode);
-        currentNode = this.isASourceNode(currentNode);
-      }
+      this.state.familyNodes.push(node.id);
+      this.addFamilyNodes(node.id);
     }
+  }
+
+  addFamilyNodes(nodeId) {
+      // determine family nodes
+      var childNodes = this.getChildNodes(nodeId);
+      if (childNodes != null) {
+        childNodes.forEach((nodeId) => {
+          this.state.familyNodes.push(nodeId);
+          this.addFamilyNodes(nodeId);
+        });
+      }
   }
 
   componentDidMount() {
