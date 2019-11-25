@@ -8,7 +8,9 @@ const doAnalysis = (testCommand) => {
     let pythonFiles = findPythonFiles(__dirname + '/analyze/repo');
     // let inputInfo = inputAnalyzer.getInputInfo(pythonFiles);
     // let runtimeResult =  runtimeAnalyzer.analyzeRuntime(pythonFiles, testCommand);
+    console.log("Runtime analysis completed.")
     let memoryResult = memoryAnalyzer.analyzeMemoryUsage(pythonFiles, testCommand);
+    console.log("Memory analysis completed.")
     // console.log(memoryResult);
     console.log("Analysis completed.");
     return [null, memoryResult];

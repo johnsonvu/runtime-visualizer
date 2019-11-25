@@ -9,7 +9,8 @@ function analyzeRuntime(pythonFiles, testCommand){
     let testFiles = findTestFiles(pythonFiles);
     testFiles.forEach(runUnitTests);
     //execute tests
-    shell.exec("cd analyze/repo && " + testCommand);
+    const command = "cd analyze/repo && " + testCommand + " &> /dev/null";
+    shell.exec(command);
     //get results
     //return results
     return new Map();

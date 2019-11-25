@@ -15,7 +15,7 @@ var logfilePath = __dirname + "/repo/logfile.txt";
 function analyzeMemoryUsage(pythonFiles, testCommand){
     pythonFiles.forEach((file) => injectAnalysisTool(file));
     //execute tests
-    const command = "cd analyze/repo && " + testCommand;
+    const command = "cd analyze/repo && " + testCommand + " &> /dev/null";
     shell.exec(command);
     //get results
     parseLogFile(logfilePath);
