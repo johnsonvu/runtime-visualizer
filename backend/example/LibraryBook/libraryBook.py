@@ -1,25 +1,20 @@
 from collections import namedtuple
 from tabulate import tabulate
 import inspect
-from codeAnalyzer import codeAnalyzer
 
 class Library(object):
 	def __init__(self):
-		print "{} --> {}".format(inspect.stack()[1][3], inspect.stack()[0][3])
 		self.books = []
 
 	def addBook(self, book):
-		print "{} --> {}".format(inspect.stack()[1][3], inspect.stack()[0][3])
 		self.books.append(book)
 
 	def searchBookISBN(self, ISBN):
-		print "{} --> {}".format(inspect.stack()[1][3], inspect.stack()[0][3])
 		for book in self.books:
 			if book.ISBN == ISBN:
 				return book
 
 	def searchBookAuthor(self, author):
-		print "{} --> {}".format(inspect.stack()[1][3], inspect.stack()[0][3])
 		written_by_author = []
 		for book in self.books:
 			if book.author == author:
@@ -27,7 +22,6 @@ class Library(object):
 		return written_by_author
 
 	def searchUnderPrice(self, price):
-		print "{} --> {}".format(inspect.stack()[1][3], inspect.stack()[0][3])
 		books_under_price = []
 		for book in self.books:
 			if book.price < price:
@@ -35,7 +29,6 @@ class Library(object):
 		return books_under_price
 		
 	def getBookInformation(self):
-		print "{} --> {}".format(inspect.stack()[1][3], inspect.stack()[0][3])
 		myList = []
 		for book in self.books:
 			entry = [book.subject, book.author, book.findTopThreeAverageRating(), book.findBottomThreeAverageRating(), book.getAverageRatings()]
@@ -46,7 +39,6 @@ class Library(object):
 
 class Book:
 	def __init__(self, subject, author, ISBN, price, ratings):
-		print "{} --> {}".format(inspect.stack()[1][3], inspect.stack()[0][3])
 		self.subject = subject
 		self.author = author
 		self.ISBN = ISBN
@@ -54,18 +46,15 @@ class Book:
 		self.ratings = ratings
 		
 	def getRatings(self):
-		print "{} --> {}".format(inspect.stack()[1][3], inspect.stack()[0][3])
 		return self.ratings
 		
 	def getAverageRatings(self):
-		print "{} --> {}".format(inspect.stack()[1][3], inspect.stack()[0][3])
 		average = 0
 		for rating in self.ratings:
 			average += rating
 		return average/ len(self.ratings)
 	
 	def getLowestRating(self):
-		print "{} --> {}".format(inspect.stack()[1][3], inspect.stack()[0][3])
 		lowest = 100
 		for rating in self.ratings:
 			if rating <= lowest:
@@ -73,34 +62,26 @@ class Book:
 		return lowest
 		
 	def sumThreeNumbers(self, first, second, third):
-		print "{} --> {}".format(inspect.stack()[1][3], inspect.stack()[0][3])
 		return first+second+third
 
 	def findTopThreeAverageRating(self):
-		print "{} --> {}".format(inspect.stack()[1][3], inspect.stack()[0][3])
-		functionName = inspect.stack()[0][3]
-		codeAnalyzer.updateCallOccurrence(functionName)
 		largest, largest2, largest3, index1,index2, index3 = None,None,None,None,None,None
 		mylist = self.ratings
 		for i in range(len(mylist)):
-			codeAnalyzer.updateCallOccurrence("{} - For Loop lvl 1".format(functionName))
 			if largest <= mylist[i] and i != index1 and i != index2 and i != index3:
 				largest = mylist[i]
 				index1 = i
 			for j in range(i+1, len(mylist)):
-				codeAnalyzer.updateCallOccurrence("{} - For Loop lvl 2".format(functionName))
 				if largest2 <= mylist[j] and j != index1 and j != index2 and j != index3:
 					largest2 = mylist[j]
 					index2 = j
 				for k in range(j+1, len(mylist)):
-					codeAnalyzer.updateCallOccurrence("{} - For Loop lvl 3".format(functionName))
 					if largest3 <= mylist[k] and k != index1 and k != index2 and k != index3:
 						largest3 = mylist[k]
 						index3 = k
 		return self.sumThreeNumbers(largest,largest2,largest3)/3
 
 	def findBottomThreeAverageRating(self):
-		print "{} --> {}".format(inspect.stack()[1][3], inspect.stack()[0][3])
 		smallest = 100
 		smallest2 = 100
 		smallest3 = 100
@@ -121,7 +102,7 @@ class Book:
 		return self.sumThreeNumbers(smallest,smallest2,smallest3)
 	
 	def changeRatingstoTopThreeAverage(self):
-		print "{} --> {}".format(inspect.stack()[1][3], inspect.stack()[0][3])
+		
 		average = self.findTopThreeAverageRating()
 		for i in range(len(self.ratings)):
 			self.ratings[i] = average
