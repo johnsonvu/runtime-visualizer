@@ -6,7 +6,6 @@ import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import _ from 'lodash';
-import { throws } from 'assert';
 
 class App extends React.Component {
   constructor(props) {
@@ -112,7 +111,7 @@ class App extends React.Component {
       // node name
       ctx.fillStyle = "black";
       ctx.font = "bold 7px Georgia";
-      ctx.fillText(node.name, node.x, (isChild && node.metadata) ? node.y-(node.val/3) : node.y);
+      ctx.fillText(node.name, node.x, node.y);
       
       // metadata
       if(isChild) {
@@ -125,12 +124,12 @@ class App extends React.Component {
           // render metadata bg
           ctx.globalAlpha = 0.7;
           ctx.fillStyle = "gray";
-          ctx.fillRect(node.x-width/2, node.y-(node.val/3)+7*i-2.5, width, 6);
+          ctx.fillRect(node.x-width/2, node.y+7*i-2.5, width, 6);
 
           // render metadata text
           ctx.globalAlpha = 1;
           ctx.fillStyle = "black";
-          ctx.fillText(txt, node.x, node.y-(node.val/3)+7*i);
+          ctx.fillText(txt, node.x, node.y+7*i);
           i++;
         });
 
@@ -240,6 +239,7 @@ class App extends React.Component {
               nodeCanvasObject={renderNode}
               nodeCanvasObjectMode={()=> 'after'}
               linkLabel={() => ''}
+              linkDirectionalParticleColor="blue"
               linkCanvasObject={renderLink}
               linkCanvasObjectMode={()=> 'after'}
               onNodeHover={(node, prevNode) => {this.selectCurrentNode(node)} }

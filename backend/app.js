@@ -89,7 +89,7 @@ const userTestData = {
             "id": "0",
             "name": "__main__",
             "color": "green",
-            "val": 200,
+            "val": 120,
             "metadata": {
                 "Lines": 20
             }
@@ -172,9 +172,9 @@ const userTestData = {
             "id": "1",
             "source": "1",
             "target": "2",
-            "width": 23,
+            "width": 23/scale+1,
             "color": "#999",
-            "distance": 100/scale+1,
+            "distance": 100,
             "name": "23 calls average"
         },
         {
