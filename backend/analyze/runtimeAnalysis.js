@@ -18,12 +18,17 @@ function analyzeRuntime(pythonFiles, subFolderDictionary, testCommand){
     testFiles.forEach(injectCodeAnalyzer);
     //testFiles.forEach(runUnitTests);
     //execute tests
-    const command = "cd analyze/repo && " + testCommand + " &> /dev/null";
+    const command = "cd analyze/repo && " + testCommand //+ " &> /dev/null";
     console.log("command is: " + command);
+    console.log("HELLLLLLLLLLOOOOOOOOOOOOOOOOO LEOOOOOOOOOOOOOOOOOOOOONSOOOOOOOOOOOOOOOOON1111111111");
     shell.exec(command);
+    console.log("HELLLLLLLLLLOOOOOOOOOOOOOOOOO LEOOOOOOOOOOOOOOOOOOOOONSOOOOOOOOOOOOOOOOON2222222222");
     //get results
-    let stringData = fs.readFileSync(__dirname__ + '/repo/data.txt', 'utf8');
-    let results = JSON.parse(stringData);
+    console.log("my dir name is: " + __dirname);
+    let stringData = fs.readFileSync(__dirname + '/repo/data.txt', 'utf8');
+    console.log("HELLLLLLLLLLOOOOOOOOOOOOOOOOO LEOOOOOOOOOOOOOOOOOOOOONSOOOOOOOOOOOOOOOOON3333333333");
+    let results = JSON.parse(JSON.parse(stringData));
+    // let results = JSON.parse(JSON.parse(stringData));
     //return results
     return results;
 }
@@ -74,7 +79,7 @@ function injectReflectionCode(fileContent, filePath ,fileDepth){
 
     let stringContent = '';
     for(let i = 0; i <modifiedContent.length; i++ ){
-        console.log(modifiedContent[i]);
+        // console.log(modifiedContent[i]);
         stringContent = stringContent.concat(modifiedContent[i]+'\n');
     }
     return stringContent;
@@ -169,18 +174,6 @@ function writeCodeAnalyzer(contents, fileDepth){
         stringContent = stringContent.concat(modifiedContent[i]+'\n');
     }
     return stringContent;
-}
-
-function runUnitTests(filePath){
-    console.log('start');
-    let test = spawnSync('python', ["C:/Users/Justin Kwan/Desktop/cs410/runtime-visualizer/backend/justintest.py"]);
-    test.stdout.on('data', (data) => {
-        console.log("data is: " + data);
-    });
-    test.stderr.on('data', (data) => {
-        console.log("data is: " + data);
-    });
-    console.log('done');
 }
 
 module.exports = { analyzeRuntime: analyzeRuntime };
