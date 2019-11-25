@@ -1,8 +1,12 @@
 const fs = require('fs');
+const { spawnSync } = require('child_process');
 
-function analyzeRuntime(pythonFiles, inputInfo){
-    //pythonFiles.forEach(injectAnalysisTool);
-    injectAnalysisTool('C:\\Users\\Leonl\\OneDrive\\Documents\\cpsc 410\\runtime-visualizer\\backend\\example\\LibraryBook\\libraryBook.py')
+function analyzeRuntime(pythonFiles){
+    pythonFiles.forEach(injectAnalysisTool);
+    // injectAnalysisTool('C:\\Users\\Leonl\\OneDrive\\Documents\\cpsc 410\\runtime-visualizer\\backend\\example\\LibraryBook\\libraryBook.py');
+
+    let testFiles = findTestFiles(pythonFiles);
+    testFiles.forEach(runUnitTests);
     //execute tests
     //get results
     //return results
@@ -49,12 +53,16 @@ function injectReflectionCode(fileContent){
             modifiedContent.push('\t'.repeat(numTabs + 1) + 'codeAnalyzer.updateCallOccurrence(functionName + "@For'+ forCount +'")');
         }
     }
-    console.log(modifiedContent);
     let stringContent = '';
     for(let i = 0; i <modifiedContent.length; i++ ){
+        console.log(modifiedContent[i]);
+        // if(modifiedContent[i].indexOf('unittest.main()') !== -1) {
+        //     console.log("here");
+        //     stringContent = stringContent.concat('\tprint("LMAO")\n'); 
+        // }
         stringContent = stringContent.concat(modifiedContent[i]+'\n');
     }
-    return stringContent
+    return stringContent;
 }
 
 
@@ -65,6 +73,25 @@ function countTabs(line){
       count++;
     }
     return count;
+}
+
+function findTestFiles(filePaths){
+    let hasUnitTestsRegExp = /import[^\n]+unittest/;
+    return filePaths.filter((filePath) => {
+        let content = fs.readFileSync(filePath, 'utf8');
+        return hasUnitTestsRegExp.test(content);
+    });
+}
+
+function runUnitTests(filePath){
+    // let test = spawnSync('python', [filePath]);
+    // test.stdout.on('data', (data) => {
+    //     console.log("data is: " + data);
+    // });
+    // test.stderr.on('data', (data) => {
+    //     console.log("data is: " + data);
+    // });
+    // console.log('done');
 }
 
 module.exports = { analyzeRuntime: analyzeRuntime };

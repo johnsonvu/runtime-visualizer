@@ -102,7 +102,7 @@ app.post('/analyze', function(req, res) {
             // call graph
 
             // run time
-            analyze.injectPythonCode();
+            analyze();
 
             // memory
 
