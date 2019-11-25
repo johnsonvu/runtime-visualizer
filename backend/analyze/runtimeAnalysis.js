@@ -1,7 +1,11 @@
 const fs = require('fs');
 const { spawnSync } = require('child_process');
 
-function analyzeRuntime(pythonFiles){
+let subFolderDict;
+
+function analyzeRuntime(pythonFiles, subFolderDictionary){
+    subFolderDict = subFolderDictionary;
+    console.log(JSON.stringify(subFolderDict));
     pythonFiles.forEach(injectAnalysisTool);
     // injectAnalysisTool('C:\\Users\\Leonl\\OneDrive\\Documents\\cpsc 410\\runtime-visualizer\\backend\\example\\LibraryBook\\libraryBook.py');
 
@@ -15,19 +19,24 @@ function analyzeRuntime(pythonFiles){
 function injectAnalysisTool(filePath){
     console.log('Analyzing runtime in ' + filePath + '\n');
     let contents = fs.readFileSync(filePath, 'utf8').split('\n').map((line)=>line.replace(/    /g, '\t'));
-    let modifiedContent = injectReflectionCode(contents);
+    let modifiedContent = injectReflectionCode(contents, subFolderDict[filePath]);
     fs.writeFileSync(filePath, modifiedContent);
 }
 
-function injectReflectionCode(fileContent){
+function injectReflectionCode(fileContent, fileDepth){
     let modifiedContent = [];
     let numTabs = 0;
     let functionName = null;
     let prevfunctionName = null;
     let forCount = 1;
+    
+    modifiedContent.push('import sys\r');
+    modifiedContent.push('sys.path.append("' + numDoubleDots(fileDepth) + 'Y")\r');
+    modifiedContent.push('from codeAnalyzer import codeAnalyzer\r');
+
     modifiedContent.push('from memory_profiler import profile\r');
     modifiedContent.push('import inspect\r');
-    modifiedContent.push('from codeAnalyzer import codeAnalyzer\r');
+    
     for(let i = 0; i <fileContent.length; i++ ){
         let line = fileContent[i];
         modifiedContent.push(line);
@@ -55,7 +64,7 @@ function injectReflectionCode(fileContent){
     }
     let stringContent = '';
     for(let i = 0; i <modifiedContent.length; i++ ){
-        console.log(modifiedContent[i]);
+        // console.log(modifiedContent[i]);
         // if(modifiedContent[i].indexOf('unittest.main()') !== -1) {
         //     console.log("here");
         //     stringContent = stringContent.concat('\tprint("LMAO")\n'); 
@@ -63,6 +72,14 @@ function injectReflectionCode(fileContent){
         stringContent = stringContent.concat(modifiedContent[i]+'\n');
     }
     return stringContent;
+}
+
+function numDoubleDots(num){
+    let dots = '';
+    for(let i=0; i<num; i++){
+        dots += '../';
+    }
+    return dots;
 }
 
 
