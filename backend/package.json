@@ -26,7 +26,8 @@
   "nodemonConfig": {
     "ignore": [
       "Dockerfile",
-      ".gitignore"
+      ".gitignore",
+      "analyze/repo/*"
     ],
     "delay": "2500"
   }
