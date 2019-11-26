@@ -10,23 +10,19 @@ function analyzeRuntime(pythonFiles, subFolderDictionary, testCommand){
     let pythonFilesWithExclusions = findPythonFilesWithExclusions(pythonFiles);
     // console.log(pythonFilesWithExclusions);
     pythonFilesWithExclusions.forEach(injectAnalysisTool);
-    //injectAnalysisTool('C:\\Users\\Leonl\\OneDrive\\Documents\\cpsc 410\\runtime-visualizer\\backend\\example\\LibraryBook\\libraryBook.py');
 
     let testFiles = findTestFiles(pythonFiles);
     // console.log(testFiles);
-    //injectCodeAnalyzer("C:\\Users\\Leonl\\OneDrive\\Documents\\cpsc 410\\runtime-visualizer\\backend\\example\\LibraryBook\\tests.py")
+
     testFiles.forEach(injectCodeAnalyzer);
-    //testFiles.forEach(runUnitTests);
+
     //execute tests
-    const command = "cd analyze/repo && " + testCommand; //+ " &> /dev/null";
-    console.log("command is: " + command);
-    //console.log("HELLLLLLLLLLOOOOOOOOOOOOOOOOO LEOOOOOOOOOOOOOOOOOOOOONSOOOOOOOOOOOOOOOOON1111111111");
+    const command = "cd analyze/repo && " + testCommand + " &> /dev/null";
     shell.exec(command);
-    //console.log("HELLLLLLLLLLOOOOOOOOOOOOOOOOO LEOOOOOOOOOOOOOOOOOOOOONSOOOOOOOOOOOOOOOOON2222222222");
+
     //get results
-    console.log("my dir name is: " + __dirname);
     let stringData = fs.readFileSync(__dirname + '/repo/data.json', 'utf8');
-    // console.log("HELLLLLLLLLLOOOOOOOOOOOOOOOOO LEOOOOOOOOOOOOOOOOOOOOONSOOOOOOOOOOOOOOOOON3333333333");
+
     let results = JSON.parse(stringData);
     return results;
 }
