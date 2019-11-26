@@ -1,3 +1,5 @@
+import json
+
 class CodeAnalyzer:
 	def __init__(self):
 		self.callOccurrence = {}
@@ -19,6 +21,7 @@ class CodeAnalyzer:
 				self.JsonData[testName].append({
 					'caller': key.split('@')[0],
 					'callee': key.split('@')[1],
+					'fileName': key.split('@')[2],
 					'occurance': self.callOccurrence[key]
 				})
 			except:
@@ -28,8 +31,8 @@ class CodeAnalyzer:
 	def createJsonFile(self):
 		json_data = json.dumps(self.JsonData, indent=4)
 		print json_data
-		with open('data.txt', 'w') as outfile:
-			json.dump(json_data, outfile)
+		with open('output.txt', 'w') as f:
+			f.write(json_data)
 
 #Instantiate static class  
 codeAnalyzer = CodeAnalyzer()
@@ -38,10 +41,16 @@ codeAnalyzer = CodeAnalyzer()
 #Inject calls
 	#import inspect
 	#from codeAnalyzer import codeAnalyzer
-	#codeAnalyzer.updateCallOccurrence(inspect.stack()[1][3])
 
-	#functionName = inspect.stack()[1][3]
-	#codeAnalyzer.updateCallOccurrence("{} - For Loop lvl 1".format(inspect.stack()[1][3]))
+	#functionName = functionname  					
+	#caller = inspect.stack()[1][3]
 
+	# Need to implement this
+	#caller = inspect.stack()[1][3]
+	#codeAnalyzer.updateCallOccurrence("{}@{}".format(caller, functionName))
+		#OR for Loops 
+	#codeAnalyzer.updateCallOccurrence("{}@For-1".format(functionName))
+
+	#Need to inject 	
 	#Caller					#Callee
 	#inspect.stack()[1][3], inspect.stack()[0][3]
