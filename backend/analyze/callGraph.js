@@ -67,7 +67,7 @@ function toJohnsonGraph(callsDict){
     for(let caller in callsDict){
         let callerInfo = callsDict[caller];
         let node = {
-            "id": callerInfo.file + caller,
+            "id": callerInfo.file + "." + caller,
             "name": caller,
             "color": randomColor(),
             "val": 50,
@@ -88,8 +88,8 @@ function toJohnsonGraph(callsDict){
         for(let callee of callerInfo.calls){
             let edge = {
                 "id": uniqueLinkId++,
-                "source": callerInfo.file + caller,
-                "target": callee.file + callee.fcn,
+                "source": callerInfo.file + "." + caller,
+                "target": callee.file + "." + callee.fcn,
                 "width": 5,
                 "color": "#999",
                 "distance": 100,

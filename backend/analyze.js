@@ -20,14 +20,16 @@ const doAnalysis = (testCommand) => {
     console.log("Call graph generation completed.");
     let runtimeResult =  runtimeAnalyzer.analyzeRuntime(pythonFiles, subFolderDict, testCommand);
     console.log("Runtime analysis completed.");
-    // let memoryResult = memoryAnalyzer.analyzeMemoryUsage(pythonFiles, testCommand);
+    let memoryResult = memoryAnalyzer.analyzeMemoryUsage(pythonFiles, testCommand);
     console.log("Memory analysis completed.");
     // console.log(memoryResult);
     console.log("Analysis completed.");
 
     // merge results
     mergeRuntimeAnalysis(johnsonGraph, runtimeResult);
-
+    // console.log(johnsonGraph);
+    mergeMemoryAnalysis(johnsonGraph, memoryResult);
+    // console.log(johnsonGraph);
     return johnsonGraph;
 }
 
@@ -94,6 +96,15 @@ function mergeRuntimeAnalysis(johnsonGraph, runtimeResult){
             // console.log("runtime.occ is : " + runtime.occurance);
             edge.width = scaleWidth(runtime.occurance);
         }
+    }
+}
+
+function mergeMemoryAnalysis(johnsonGraph, memoryResult) {
+    // console.log(johnsonGraph.nodes)
+    for (let node of johnsonGraph.nodes) {
+        const result = memoryResult.get(node.id);
+        // console.log(node.id + " " + result);
+        node.val = result ? result : 4; // if no memory is given, defaults to val 4
     }
 }
 

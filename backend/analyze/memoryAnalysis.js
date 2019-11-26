@@ -13,11 +13,15 @@ var functionMemoryMap = new Map();
 var logfilePath = __dirname + "/repo/logfile.txt";
 
 function analyzeMemoryUsage(pythonFiles, testCommand){
+    // reset repo to it's initial state
+    const command1 = "cd analyze/repo && " + "git reset --hard" + " &> /dev/null";
+    shell.exec(command1);
+
     let nonTestFiles = findNonTestFiles(pythonFiles);
     nonTestFiles.forEach((file) => injectAnalysisTool(file));
     //execute tests
-    const command = "cd analyze/repo && " + testCommand + " &> /dev/null";
-    shell.exec(command);
+    const command2 = "cd analyze/repo && " + testCommand + " &> /dev/null";
+    shell.exec(command2);
     //get results
     parseLogFile(logfilePath);
     //return results
@@ -87,7 +91,7 @@ function parseLogFile(path) {
 function parseAllTableFilenames(filenames) {
     for(let i = 0; i < filenames.length; i++){
         let f = filenames[i];
-        fileNameArray.push(f.substring(f.indexOf(" ")+1,f.indexOf(".py\n")));
+        fileNameArray.push(f.substring(f.indexOf(" ")+1,f.indexOf("\n")));
     }
 }
 
