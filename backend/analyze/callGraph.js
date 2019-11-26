@@ -4,9 +4,10 @@ let fileFunctionDict = {};
 let callsDictionary = {};
 
 function makeCallGraph(pythonFiles){
-    pythonFiles.forEach(findFunctions);
+    const nonTestFiles = findNonTestFiles(pythonFiles);
+    nonTestFiles.forEach(findFunctions);
     // console.log(JSON.stringify(fileFunctionDict));
-    pythonFiles.forEach(findCalls);
+    nonTestFiles.forEach(findCalls);
     // console.log(JSON.stringify(callsDictionary));
 
     return callsDictionary;
@@ -67,7 +68,7 @@ function toJohnsonGraph(callsDict){
     for(let caller in callsDict){
         let callerInfo = callsDict[caller];
         let node = {
-            "id": callerInfo.file + caller,
+            "id": callerInfo.file + "." + caller,
             "name": caller,
             "color": randomColor(),
             "val": 50,
@@ -88,8 +89,8 @@ function toJohnsonGraph(callsDict){
         for(let callee of callerInfo.calls){
             let edge = {
                 "id": uniqueLinkId++,
-                "source": callerInfo.file + caller,
-                "target": callee.file + callee.fcn,
+                "source": callerInfo.file + "." + caller,
+                "target": callee.file + "." + callee.fcn,
                 "width": 5,
                 "color": "#999",
                 "distance": 100,
@@ -120,6 +121,13 @@ function randomColor(){
         default:
             return "#AAAAAA";
     }
+}
+
+
+function findNonTestFiles(filePaths){
+    return filePaths.filter((filePath) => {
+        return !filePath.toLowerCase().includes("test");
+    });
 }
 
 module.exports = { makeCallGraph: makeCallGraph, toJohnsonGraph: toJohnsonGraph };

@@ -13,26 +13,23 @@ let maxMemory;
 var subFolderDict = {};
 // invokes runtime and memory analysis and outputs their results
 const doAnalysis = (testCommand) => {
-    // 1 is for
     let pythonFiles = findPythonFiles(__dirname + '/analyze/repo', 1);
     // let inputInfo = inputAnalyzer.getInputInfo(pythonFiles);
-    //let memoryResult = memoryAnalyzer.analyzeMemoryUsage(pythonFiles, testCommand);
     let callGraph = callGraphGenerator.makeCallGraph(pythonFiles);
     let johnsonGraph = callGraphGenerator.toJohnsonGraph(callGraph);
+    console.log("Call graph generation completed.");
     let runtimeResult =  runtimeAnalyzer.analyzeRuntime(pythonFiles, subFolderDict, testCommand);
-    console.log("Runtime analysis completed.")
-    // let memoryResult = memoryAnalyzer.analyzeMemoryUsage(pythonFiles, testCommand);
-    console.log("Memory analysis completed.")
+    console.log("Runtime analysis completed.");
+    let memoryResult = memoryAnalyzer.analyzeMemoryUsage(pythonFiles, testCommand);
+    console.log("Memory analysis completed.");
     // console.log(memoryResult);
     console.log("Analysis completed.");
 
+    // merge results
     mergeRuntimeAnalysis(johnsonGraph, runtimeResult);
-
-    // return [null, memoryResult];
-
-    // runtimeAnalyzer.analyzeRuntime(pythonFiles, subFolderDict);
-
-    // console.log(JSON.stringify(johnsonGraph));
+    // console.log(johnsonGraph);
+    mergeMemoryAnalysis(johnsonGraph, memoryResult);
+    // console.log(johnsonGraph);
     return johnsonGraph;
 }
 
@@ -58,47 +55,56 @@ function mergeRuntimeAnalysis(johnsonGraph, runtimeResult){
     // for(let node of johnsonGraph.nodes){
     //     runtimeResult.find(result => result.fileName + result.)
     // }
-    console.log("HERE");
+    // console.log("HERE");
     // console.log("what is runtime result?\n");
     // console.log(JSON.parse(runtimeResult));
     for(let test in runtimeResult){
-        console.log("what is test? " + test + "\n");
-        console.log("runtime[test]:\n");
-        console.log(runtimeResult[test]);
+        // console.log("what is test? " + test + "\n");
+        // console.log("runtime[test]:\n");
+        // console.log(runtimeResult[test]);
         maxCalls = Math.max(maxCalls, runtimeResult[test].reduce((biggest, curr) => Math.max(biggest, curr.occurance), 0));
     }
-    console.log("WE");
+    // console.log("WE");
     for(let test in runtimeResult){
         minCalls = Math.min(minCalls, runtimeResult[test].reduce((smallest, curr) => Math.min(smallest, curr.occurance), runtimeResult[test][0].occurance));
     }
-    console.log("Go");
-    console.log("***********************************************************************************************************************************************");
-    console.log(maxCalls);
-    console.log(minCalls);
+    // console.log("Go");
+    // console.log("***********************************************************************************************************************************************");
+    // console.log(maxCalls);
+    // console.log(minCalls);
 
     for(let edge of johnsonGraph.links){
         let runtime = null;
         for(let test in runtimeResult){
-            console.log("edge source target: ");
-            console.log(edge.source);
-            console.log(edge.target);
+            // console.log("edge source target: ");
+            // console.log(edge.source);
+            // console.log(edge.target);
             runtime = runtimeResult[test].find(rt => {
                 
-                console.log('\n\n');
-                console.log("rtname + caller callee");
-                console.log(rt.fileName + rt.caller);
-                console.log(rt.fileName + rt.callee);
+                // console.log('\n\n');
+                // console.log("rtname + caller callee");
+                // console.log(rt.fileName + rt.caller);
+                // console.log(rt.fileName + rt.callee);
                 return edge.source.endsWith(rt.caller) && edge.target.endsWith(rt.callee)
             });
             if(runtime != null) break;
         }
         
         if(runtime!=null) {
-            console.log("WE DID IT");
+            // console.log("WE DID IT");
             // console.log("runtime is : " + JSON.parse(runtime));
             // console.log("runtime.occ is : " + runtime.occurance);
             edge.width = scaleWidth(runtime.occurance);
         }
+    }
+}
+
+function mergeMemoryAnalysis(johnsonGraph, memoryResult) {
+    // console.log(johnsonGraph.nodes)
+    for (let node of johnsonGraph.nodes) {
+        const result = memoryResult.get(node.id);
+        // console.log(node.id + " " + result);
+        node.val = result ? result : 4; // if no memory is given, defaults to val 4
     }
 }
 

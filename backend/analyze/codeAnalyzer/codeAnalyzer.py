@@ -30,9 +30,15 @@ class CodeAnalyzer:
 
 	def createJsonFile(self):
 		json_data = json.dumps(self.JsonData, indent=4)
+<<<<<<< HEAD
 		print json_data
 		with open('data.json', 'w') as f:
 			f.write(json_data)
+=======
+		# print json_data
+		with open('data.txt', 'w') as outfile:
+			json.dump(json_data, outfile)
+>>>>>>> 8a5def62fce30d5753d026f7637a15cad743ba4d
 
 #Instantiate static class  
 codeAnalyzer = CodeAnalyzer()
