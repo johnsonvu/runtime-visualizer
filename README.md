@@ -33,3 +33,6 @@ Now run the following command in the main project directory:
 $ sudo docker-compose up
 ```
 
+## Analysis Description
+Runtime Analysis
+   Instead of using build in python librarys to store our call occruances, we made our own python class to store everything. We injected code that would call this libary after before/after every call.
