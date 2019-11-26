@@ -18,10 +18,12 @@ class CodeAnalyzer:
 		self.JsonData[testName] = []
 		for key in self.callOccurrence:
 			try:
+				keys = key.split('@')
 				self.JsonData[testName].append({
-					'caller': key.split('@')[0],
-					'callee': key.split('@')[1],
-					'fileName': key.split('@')[2],
+					'caller': keys[0],
+					'callee': keys[1],
+					'fileName': keys[2],
+					'params': keys[3::],
 					'occurance': self.callOccurrence[key]
 				})
 			except:

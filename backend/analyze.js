@@ -4,6 +4,7 @@ const runtimeAnalyzer = require('./analyze/runtimeAnalysis.js');
 const memoryAnalyzer = require('./analyze/memoryAnalysis');
 
 const testedCalls = [];
+const testedFunctions = [];
 const maxWidth = 100;
 const minWidth = 1;
 const maxSize = 120;
@@ -21,7 +22,7 @@ const doAnalysis = (testCommand) => {
     console.log("Call graph generation completed.");
     let runtimeResult =  runtimeAnalyzer.analyzeRuntime(pythonFiles, subFolderDict, testCommand);
     console.log("Runtime analysis completed.");
-    let memoryResult = memoryAnalyzer.analyzeMemoryUsage(pythonFiles, testCommand);
+    // let memoryResult = memoryAnalyzer.analyzeMemoryUsage(pythonFiles, testCommand);
     console.log("Memory analysis completed.");
     // console.log(memoryResult);
     console.log("Analysis completed.");
@@ -30,7 +31,7 @@ const doAnalysis = (testCommand) => {
     console.log("Runtime Analysis Graph creation...");
     mergeRuntimeAnalysis(johnsonGraph, runtimeResult);
     console.log("Memory Analysis Graph creation...");
-    mergeMemoryAnalysis(johnsonGraph, memoryResult);
+    // mergeMemoryAnalysis(johnsonGraph, memoryResult);
     console.log("Graphs completed!");
 
     return johnsonGraph;
@@ -55,6 +56,18 @@ function findPythonFiles(directory, level){
 }
 
 function mergeRuntimeAnalysis(johnsonGraph, runtimeResult){
+    for(let node of johnsonGraph.nodes){
+        node.metadata = {};
+        for(let test in runtimeResult){
+            let nodeInfo = runtimeResult[test].find(rt => node.id.endsWith(rt.callee));
+            if(nodeInfo!=null){
+                node.metadata.params = nodeInfo.params.toString();
+                testedFunctions.push(node.id);
+                break;
+            }
+        }
+    }
+
     for(let edge of johnsonGraph.links){
         let allCalls = [];
         for(let test in runtimeResult){
@@ -78,6 +91,10 @@ function mergeRuntimeAnalysis(johnsonGraph, runtimeResult){
             minCalls = Math.min(minCalls, total);
         }
     }
+
+    johnsonGraph.nodes.forEach(node => {
+        if(!testedFunctions.includes(node.id)) node.color = '#BBBBBB';
+    });
 
     johnsonGraph.links.forEach(edge => {
         if (!testedCalls.includes(edge.id)) return;

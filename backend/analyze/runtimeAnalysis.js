@@ -17,7 +17,7 @@ function analyzeRuntime(pythonFiles, subFolderDictionary, testCommand){
     testFiles.forEach(injectCodeAnalyzer);
 
     //execute tests
-    const command = 'cd analyze/repo && ' + testCommand + ' &> /dev/null';
+    const command = 'cd analyze/repo && ' + testCommand //+ ' &> /dev/null';
     shell.exec(command);
 
     //get results
@@ -52,13 +52,15 @@ function injectReflectionCode(fileContent, filePath ,fileDepth){
         // Caller to callee relationship
         if(line.trim().startsWith('def')){
             numTabs = countTabs(line);
-            functionSignature = line.split(/[(def)|\(\,\))]/);
+            functionSignature = line.split(/(def|\(|\,|\))+/g);
             functionName = functionSignature[2];
             let params = functionSignature.slice(4,-2)
                 .map(param => param.trim())
-                .filter(param => param !== ',');
+                .filter(param => param !== ',')
+                .reduce((atDelimitedString, param) => atDelimitedString + '@'+param, '@');
+            console.log("params: " + params);
             modifiedContent.push('\t'.repeat(numTabs + 1) + 'functionName = "'+ functionName +'"\r');
-            modifiedContent.push('\t'.repeat(numTabs + 1) + 'codeAnalyzer.updateCallOccurrence(inspect.stack()[1][3]+ "@" + functionName + "@'+ filePath +'")\r');
+            modifiedContent.push('\t'.repeat(numTabs + 1) + 'codeAnalyzer.updateCallOccurrence(inspect.stack()[1][3]+ "@" + functionName + "@'+ filePath + params +'")\r');
         }
 
         // For Loop inside a function

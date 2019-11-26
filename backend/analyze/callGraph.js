@@ -119,7 +119,7 @@ function randomColor(){
         case 5:
             return "#FF24D7";
         default:
-            return "#AAAAAA";
+            return "#DDAA0C";
     }
 }
 
