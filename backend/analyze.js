@@ -20,16 +20,18 @@ const doAnalysis = (testCommand) => {
     console.log("Call graph generation completed.");
     let runtimeResult =  runtimeAnalyzer.analyzeRuntime(pythonFiles, subFolderDict, testCommand);
     console.log("Runtime analysis completed.");
-    let memoryResult = memoryAnalyzer.analyzeMemoryUsage(pythonFiles, testCommand);
+    //let memoryResult = memoryAnalyzer.analyzeMemoryUsage(pythonFiles, testCommand);
     console.log("Memory analysis completed.");
     // console.log(memoryResult);
     console.log("Analysis completed.");
 
     // merge results
+    console.log("Runtime Analysis Graph creation...");
     mergeRuntimeAnalysis(johnsonGraph, runtimeResult);
-    // console.log(johnsonGraph);
+    console.log("Memory Analysis Graph creation...");
     mergeMemoryAnalysis(johnsonGraph, memoryResult);
-    // console.log(johnsonGraph);
+    console.log("Graphs completed!");
+
     return johnsonGraph;
 }
 

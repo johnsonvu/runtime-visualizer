@@ -249,7 +249,7 @@ app.post('/analyze', function(req, res) {
             // inject + analyze + run tests
             let johnsonGraph = analyze(testCmd);
 
-            // console.log(JSON.stringify(johnsonGraph));
+            console.log(JSON.stringify(johnsonGraph));
             // then post the results/data
             return res.send(JSON.stringify(johnsonGraph));
         })

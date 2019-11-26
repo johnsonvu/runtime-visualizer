@@ -24,12 +24,10 @@ function analyzeRuntime(pythonFiles, subFolderDictionary, testCommand){
     shell.exec(command);
     //console.log("HELLLLLLLLLLOOOOOOOOOOOOOOOOO LEOOOOOOOOOOOOOOOOOOOOONSOOOOOOOOOOOOOOOOON2222222222");
     //get results
-    // console.log("my dir name is: " + __dirname);
-    let stringData = fs.readFileSync(__dirname + '/repo/data.txt', 'utf8');
+    console.log("my dir name is: " + __dirname);
+    let stringData = fs.readFileSync(__dirname + '/repo/data.json', 'utf8');
     // console.log("HELLLLLLLLLLOOOOOOOOOOOOOOOOO LEOOOOOOOOOOOOOOOOOOOOONSOOOOOOOOOOOOOOOOON3333333333");
     let results = JSON.parse(stringData);
-    // let results = JSON.parse(JSON.parse(stringData));
-    //return results
     return results;
 }
 
