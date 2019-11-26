@@ -20,7 +20,7 @@ const doAnalysis = (testCommand) => {
     console.log("Call graph generation completed.");
     let runtimeResult =  runtimeAnalyzer.analyzeRuntime(pythonFiles, subFolderDict, testCommand);
     console.log("Runtime analysis completed.");
-    //let memoryResult = memoryAnalyzer.analyzeMemoryUsage(pythonFiles, testCommand);
+    let memoryResult = memoryAnalyzer.analyzeMemoryUsage(pythonFiles, testCommand);
     console.log("Memory analysis completed.");
     // console.log(memoryResult);
     console.log("Analysis completed.");
