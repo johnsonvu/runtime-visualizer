@@ -52,11 +52,7 @@ function injectReflectionCode(fileContent, filePath ,fileDepth){
         // Caller to callee relationship
         if(line.trim().startsWith('def')){
             numTabs = countTabs(line);
-            functionSignature = line.split(/[(def)|\(\,\))]/);
-            functionName = functionSignature[2];
-            let params = functionSignature.slice(4,-2)
-                .map(param => param.trim())
-                .filter(param => param !== ',');
+            functionName = line.split('def')[1].split('(')[0].trim();
             modifiedContent.push('\t'.repeat(numTabs + 1) + 'functionName = "'+ functionName +'"\r');
             modifiedContent.push('\t'.repeat(numTabs + 1) + 'codeAnalyzer.updateCallOccurrence(inspect.stack()[1][3]+ "@" + functionName + "@'+ filePath +'")\r');
         }
