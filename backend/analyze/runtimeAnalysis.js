@@ -18,16 +18,16 @@ function analyzeRuntime(pythonFiles, subFolderDictionary, testCommand){
     testFiles.forEach(injectCodeAnalyzer);
     //testFiles.forEach(runUnitTests);
     //execute tests
-    const command = "cd analyze/repo && " + testCommand + " &> /dev/null";
-    // console.log("command is: " + command);
-    // console.log("HELLLLLLLLLLOOOOOOOOOOOOOOOOO LEOOOOOOOOOOOOOOOOOOOOONSOOOOOOOOOOOOOOOOON1111111111");
+    const command = "cd analyze/repo && " + testCommand; //+ " &> /dev/null";
+    console.log("command is: " + command);
+    //console.log("HELLLLLLLLLLOOOOOOOOOOOOOOOOO LEOOOOOOOOOOOOOOOOOOOOONSOOOOOOOOOOOOOOOOON1111111111");
     shell.exec(command);
-    // console.log("HELLLLLLLLLLOOOOOOOOOOOOOOOOO LEOOOOOOOOOOOOOOOOOOOOONSOOOOOOOOOOOOOOOOON2222222222");
+    //console.log("HELLLLLLLLLLOOOOOOOOOOOOOOOOO LEOOOOOOOOOOOOOOOOOOOOONSOOOOOOOOOOOOOOOOON2222222222");
     //get results
     // console.log("my dir name is: " + __dirname);
     let stringData = fs.readFileSync(__dirname + '/repo/data.txt', 'utf8');
     // console.log("HELLLLLLLLLLOOOOOOOOOOOOOOOOO LEOOOOOOOOOOOOOOOOOOOOONSOOOOOOOOOOOOOOOOON3333333333");
-    let results = JSON.parse(JSON.parse(stringData));
+    let results = JSON.parse(stringData);
     // let results = JSON.parse(JSON.parse(stringData));
     //return results
     return results;

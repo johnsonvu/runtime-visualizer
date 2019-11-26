@@ -30,7 +30,7 @@ class CodeAnalyzer:
 
 	def createJsonFile(self):
 		json_data = json.dumps(self.JsonData, indent=4)
-		print json_data
+		#print json_data
 		with open('data.json', 'w') as f:
 			f.write(json_data)
 
