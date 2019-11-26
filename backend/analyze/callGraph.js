@@ -4,9 +4,10 @@ let fileFunctionDict = {};
 let callsDictionary = {};
 
 function makeCallGraph(pythonFiles){
-    pythonFiles.forEach(findFunctions);
+    const nonTestFiles = findNonTestFiles(pythonFiles);
+    nonTestFiles.forEach(findFunctions);
     // console.log(JSON.stringify(fileFunctionDict));
-    pythonFiles.forEach(findCalls);
+    nonTestFiles.forEach(findCalls);
     // console.log(JSON.stringify(callsDictionary));
 
     return callsDictionary;
@@ -120,6 +121,13 @@ function randomColor(){
         default:
             return "#AAAAAA";
     }
+}
+
+
+function findNonTestFiles(filePaths){
+    return filePaths.filter((filePath) => {
+        return !filePath.toLowerCase().includes("test");
+    });
 }
 
 module.exports = { makeCallGraph: makeCallGraph, toJohnsonGraph: toJohnsonGraph };
