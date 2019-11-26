@@ -35,4 +35,4 @@ $ sudo docker-compose up
 
 ## Analysis Description
 Runtime Analysis
-   Instead of using build in python librarys to store our call occruances, we made our own python class to store everything. We injected code that would call this libary after before/after every call.
+    * Instead of using build in python librarys to grab the data, we made our own python class to store our call information. We injected code that would call this libary after before/after every call. From the information gather by this class, we can then parse the output data file and create our visualization. Each test will also have a call injection to create a new instance of our analyize class
