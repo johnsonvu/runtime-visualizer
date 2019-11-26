@@ -17,7 +17,7 @@ function analyzeRuntime(pythonFiles, subFolderDictionary, testCommand){
     testFiles.forEach(injectCodeAnalyzer);
 
     //execute tests
-    const command = "cd analyze/repo && " + testCommand + " &> /dev/null";
+    const command = 'cd analyze/repo && ' + testCommand + ' &> /dev/null';
     shell.exec(command);
 
     //get results
@@ -52,7 +52,11 @@ function injectReflectionCode(fileContent, filePath ,fileDepth){
         // Caller to callee relationship
         if(line.trim().startsWith('def')){
             numTabs = countTabs(line);
-            functionName = line.split('def')[1].split('(')[0].trim();
+            functionSignature = line.split(/[(def)|\(\,\))]/);
+            functionName = functionSignature[2];
+            let params = functionSignature.slice(4,-2)
+                .map(param => param.trim())
+                .filter(param => param !== ',');
             modifiedContent.push('\t'.repeat(numTabs + 1) + 'functionName = "'+ functionName +'"\r');
             modifiedContent.push('\t'.repeat(numTabs + 1) + 'codeAnalyzer.updateCallOccurrence(inspect.stack()[1][3]+ "@" + functionName + "@'+ filePath +'")\r');
         }
@@ -98,13 +102,13 @@ function countTabs(line){
 
 function findTestFiles(filePaths){
     return filePaths.filter((filePath) => {
-        return filePath.toLowerCase().includes("test");
+        return filePath.toLowerCase().includes('test');
     });
 }
 
 function findPythonFilesWithExclusions(filePaths){
     return filePaths.filter((filePath) => {
-        return !filePath.toLowerCase().includes("test") && !filePath.includes("codeAnalyzer.py");
+        return !filePath.toLowerCase().includes('test') && !filePath.includes('codeAnalyzer.py');
     });
 }
 

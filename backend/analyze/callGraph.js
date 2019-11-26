@@ -73,9 +73,9 @@ function toJohnsonGraph(callsDict){
             "color": randomColor(),
             "val": 50,
             "metadata": {
-                "lines": 1,
-                "variables": 1,
-                "calls": 1
+                // "lines": 1,
+                // "variables": 1,
+                // "calls": 1
             }
         };
 
@@ -91,10 +91,10 @@ function toJohnsonGraph(callsDict){
                 "id": uniqueLinkId++,
                 "source": callerInfo.file + "." + caller,
                 "target": callee.file + "." + callee.fcn,
-                "width": 5,
+                "width": 1,
                 "color": "#999",
                 "distance": 100,
-                "name": "called 72 times total\n average 12"
+                "name": "No info"
             };
 
             links.push(edge);

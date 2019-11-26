@@ -1,9 +1,9 @@
-const fs = require("fs");
-const express = require("express");
-const cors = require("cors");
+const fs = require('fs');
+const express = require('express');
+const cors = require('cors');
 const git = require('simple-git/promise');
 const shell = require('shelljs');
-const analyze = require("./analyze.js")
+const analyze = require('./analyze.js')
 
 const app = express();
 const bodyParser = require('body-parser');
@@ -226,7 +226,7 @@ const userTestData = {
 };
 
 app.get('/',function(req,res){
-    res.send("It's working!");
+    res.send('It\'s working!');
 });
 
 // This is an example of downloading a git repository
@@ -235,10 +235,10 @@ app.post('/analyze', function(req, res) {
     const repo = req.body.repoLink;
     const testCmd = req.body.testCmd;
     if(!repo) {
-        return res.status(402).send("Repository link is invalid");
+        return res.status(402).send('Repository link is invalid');
     }
     if(!testCmd) {
-        return res.status(403).send("Test command is invalid");
+        return res.status(403).send('Test command is invalid');
     }
 
     // delete the repo directory if already cloned before
@@ -252,7 +252,7 @@ app.post('/analyze', function(req, res) {
             // then post the results/data
             return res.send(JSON.stringify(johnsonGraph));
         })
-        .catch((err) => {return res.status(401).send("There was an error cloning " + err)});
+        .catch((err) => {return res.status(401).send('There was an error during cloning ' + err)});
 });
 
 app.listen(3001, () => {})

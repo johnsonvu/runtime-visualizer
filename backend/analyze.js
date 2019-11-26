@@ -3,6 +3,7 @@ const callGraphGenerator = require('./analyze/callGraph.js');
 const runtimeAnalyzer = require('./analyze/runtimeAnalysis.js');
 const memoryAnalyzer = require('./analyze/memoryAnalysis');
 
+const testedCalls = [];
 const maxWidth = 100;
 const minWidth = 1;
 const maxSize = 120;
@@ -54,51 +55,35 @@ function findPythonFiles(directory, level){
 }
 
 function mergeRuntimeAnalysis(johnsonGraph, runtimeResult){
-    // for(let node of johnsonGraph.nodes){
-    //     runtimeResult.find(result => result.fileName + result.)
-    // }
-    // console.log("HERE");
-    // console.log("what is runtime result?\n");
-    // console.log(JSON.parse(runtimeResult));
-    for(let test in runtimeResult){
-        // console.log("what is test? " + test + "\n");
-        // console.log("runtime[test]:\n");
-        // console.log(runtimeResult[test]);
-        maxCalls = Math.max(maxCalls, runtimeResult[test].reduce((biggest, curr) => Math.max(biggest, curr.occurance), 0));
-    }
-    // console.log("WE");
-    for(let test in runtimeResult){
-        minCalls = Math.min(minCalls, runtimeResult[test].reduce((smallest, curr) => Math.min(smallest, curr.occurance), runtimeResult[test][0].occurance));
-    }
-    // console.log("Go");
-    // console.log("***********************************************************************************************************************************************");
-    // console.log(maxCalls);
-    // console.log(minCalls);
-
     for(let edge of johnsonGraph.links){
-        let runtime = null;
+        let allCalls = [];
         for(let test in runtimeResult){
-            // console.log("edge source target: ");
-            // console.log(edge.source);
-            // console.log(edge.target);
-            runtime = runtimeResult[test].find(rt => {
-                
-                // console.log('\n\n');
-                // console.log("rtname + caller callee");
-                // console.log(rt.fileName + rt.caller);
-                // console.log(rt.fileName + rt.callee);
-                return edge.source.endsWith(rt.caller) && edge.target.endsWith(rt.callee)
-            });
-            if(runtime != null) break;
+            let calls = runtimeResult[test].filter(rt => edge.source.endsWith(rt.caller) && edge.target.endsWith(rt.callee));
+            
+            if (calls.length>0){
+                let total = calls.reduce((sum, call) => sum  + call.occurance, 0);
+                let average = total / calls.length;
+                allCalls.push({total: total, avg: average});
+            }
         }
         
-        if(runtime!=null) {
-            // console.log("WE DID IT");
-            // console.log("runtime is : " + JSON.parse(runtime));
-            // console.log("runtime.occ is : " + runtime.occurance);
-            edge.width = scaleWidth(runtime.occurance);
+        if(allCalls.length>0) {
+            let total = allCalls.reduce((sum, callInfo) => sum + callInfo.total, 0);
+            let average = allCalls.reduce((sum, callInfo) => sum + callInfo.avg, 0)/allCalls.length;
+            edge.width = total;
+            edge.name = `${total} calls\n${average} per caller average`;
+            testedCalls.push(edge.id);
+
+            maxCalls = Math.max(maxCalls, total);
+            minCalls = Math.min(minCalls, total);
         }
     }
+
+    johnsonGraph.links.forEach(edge => {
+        if (!testedCalls.includes(edge.id)) return;
+        edge.width = scaleWidth(edge.width);
+        edge.length = scaleLengthFromWidth(edge.width);
+    });
 }
 
 function mergeMemoryAnalysis(johnsonGraph, memoryResult) {
@@ -112,6 +97,9 @@ function mergeMemoryAnalysis(johnsonGraph, memoryResult) {
 
 function scaleWidth(width){
     return Math.max(width * (maxWidth - minWidth) / (maxCalls - minCalls), minWidth);
+}
+function scaleLengthFromWidth(width){
+    return Math.min(500, Math.max(width*8, 100));
 }
 
 module.exports = doAnalysis;
