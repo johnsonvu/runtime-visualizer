@@ -1,9 +1,12 @@
 # runtime-visualizer
 A visualizer for analyzing Python code.
 
-## Visualizer
+## Preview
 Enter a Python project repository and the command to execute tests, then voila!
 ![example-app](./images/app.png)
+
+## Design Video
+[![Alt text](./images/video.png "DesignVideo")](https://www.youtube.com/watch?v=zkbQfQ-w3ts)
 
 ## Visualization Description
 1. Our visualization was implemented using react-force-graph-2d
