@@ -10,41 +10,56 @@ Enter a Python project repository and the command to execute tests, then voila!
 
 ## Visualization Description
 1. Our visualization was implemented using react-force-graph-2d
-    * On top of this, we created customized rendering for node, and link metadata to display as an overlay
+    * On top of this, we created customized rendering for node, and link metadata to display as an overlay 
     * To prevent clutter, we only display data on hover
         * The hovered node and its children are highlighted and their metadata is displayed
 
 ## Analysis Description
-1. Runtime Analysis
-    * Instead of using built-in Python libraries to grab the data, we made our own Python class to store our call information. 
-    * We injected code that would call this library after before/after every call. 
-    * Each test will also have a call injection to create a new instance of our analyze class
-    * Data from this analysis is represented by edge width
 
-2. Memory Analysis
-    * We used a Python library mem_profile and inject profiles to each function def in all files
-    * Then, we execute the unit tests and parse the log file and track peak memory usage for every function call
-    * Data from this analysis is represented by the size of the nodes
+1. Function Call Graph — base graph shown in visualization
+    * Using static syntactic analysis we grabbed all the name of functions
+    * Using static lexical analysis, we look for function uses in each function of each file
+
+2. Runtime Analysis — adds hover details and representitive edge widths to graph
+    * Using static syntactical analysis, we determined where functions started and saved the name and make a call to our injected code to call our analyzeCode package
+    * Using dynamic semantic analysis we ran tests that would trigger the injected lines of code naturally with reasonable inputs and save the data in a .json file to be processed later in JavaScript
+    * Made a Python class to store our call information
+    * Separate injections were made for test classes to  instantiate our code analyzer per test
+
+3. Memory Analysis — adds node size to graph
+    * Using static syntatical analysis, we find function definitions and inject code before each
+    * For our dynamic analysis we run tests and lexically analyze the results from memory_profiler, tracking peak memory usage for each function call
 
 ## Group members & Work Contributed
 1. Johnson Vu
     * Visualization
+        * d3 setup
     * Front & Back-end configuration
     * General application data workflow/pipelining
-    * Memory analysis code injection
+        * integration of everyones' parts
+    * Memory analysis
+        * Injection into Python files
+    * User tests
 
 2. Justin Kwan
     * Call graph generation
     * Run-time injection and analysis
-    * Back-end configuration
-3. Leon Lui
+        * Brainstorming dynamic analysis process
+        * Analysis of results
+        * Injection into Python files
+    * User tests
+3. Leon Lui (our Python expert 🙂)
     * Run-time injection and analysis
-        * Create data structure to keep track of function calls
+        * Code analysis Python class
+        * Injection into Python files
     * Example code mock-up
 4. MengXin Zhao
 5. Varun Belani
     * Memory analysis
+        * Analysis of memory_profiler results
     * Project video
+        * Video editing
+        * Audio recording
 
 ## Running the application
 First install `docker` and `docker-compose`
